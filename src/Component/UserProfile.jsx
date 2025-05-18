@@ -2,6 +2,7 @@ import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Navbar from './Navbar';
+const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 
 const UserProfile = () => {
@@ -30,7 +31,7 @@ const UserProfile = () => {
       "username": user.name,
     }
     try{
-      const res = await axios.put("http://localhost:8080/user/updateUser",body,{
+      const res = await axios.put(`${BASE_URL}/user/updateUser`,body,{
         headers: {Authorization: `Bearer ${token}`},
       });
       const newUser = res.data.user;

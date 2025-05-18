@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 const Register = () => {
   const [formData, setFormData] = useState({
@@ -37,7 +38,7 @@ const Register = () => {
     console.log(body)
     
     axios
-      .post("http://localhost:8080/public/signupUser", body,{
+      .post(`${BASE_URL}/public/signupUser`, body,{
         withCredentials: true,
       })
       .then((res) => {

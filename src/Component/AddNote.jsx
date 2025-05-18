@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 function AddNote({ refreshOnSuccess }) {
   const [title, setTitle] = useState("");
@@ -45,7 +46,7 @@ function AddNote({ refreshOnSuccess }) {
 
     try {
       const res = await axios.post(
-        "http://localhost:8080/journal/createEntry",
+        `${BASE_URL}/journal/createEntry`,
         body,
         {
           headers: { Authorization: `Bearer ${token}` },

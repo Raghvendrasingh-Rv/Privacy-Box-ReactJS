@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import Alert from '@mui/material/Alert';
+const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -17,7 +17,7 @@ const Login = () => {
       password: password,
     };
     axios
-      .post("http://localhost:8080/public/loginUser", body)
+      .post(`${BASE_URL}/public/loginUser`, body)
       .then((res) => {
         localStorage.setItem("token", res.data);
         navigate("/dashboard");

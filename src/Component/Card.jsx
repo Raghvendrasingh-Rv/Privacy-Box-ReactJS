@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { FaTrashAlt, FaEdit } from "react-icons/fa";
 import axios from "axios";
+const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 const sentimentColors = {
   Positive: "text-green-600 bg-green-100",
@@ -51,7 +52,7 @@ const Card = ({
 
   const handleUpdate = async () => {
     try {
-      await axios.put(`http://localhost:8080/journal/update/${id}`, editData, {
+      await axios.put(`${BASE_URL}/journal/update/${id}`, editData, {
         headers: { Authorization: `Bearer ${token}` },
       });
       refreshOnSuccess();

@@ -5,6 +5,9 @@ import Footer from "./Footer";
 import Navbar from "./Navbar";
 import AddNote from "./AddNote";
 import { useNavigate } from "react-router-dom";
+const BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
+
 
 function Dashboard() {
   const navigate = useNavigate();
@@ -20,7 +23,7 @@ function Dashboard() {
     }
 
     try {
-      const res = await axios.get("http://localhost:8080/journal/getAll", {
+      const res = await axios.get(`${BASE_URL}/journal/getAll`, {
         headers: { Authorization: `Bearer ${token}` },
       })
       console.log("Success:", res);
