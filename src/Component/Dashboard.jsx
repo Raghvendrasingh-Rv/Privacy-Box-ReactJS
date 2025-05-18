@@ -6,17 +6,17 @@ import Navbar from "./Navbar";
 import AddNote from "./AddNote";
 import { useNavigate } from "react-router-dom";
 const BASE_URL = import.meta.env.VITE_API_BASE_URL;
-
-
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
 
 function Dashboard() {
   const navigate = useNavigate();
   const [files, setFiles] = useState([]);
   const token = localStorage.getItem("token");
   const [blankEnable, setBlankEnable] = useState(false);
+  const [loading, setLoading] = useState(true); // loading state
 
   const fetchUserFiles = async () => {
-    
     if (!token) {
       navigate("/login");
       return;
@@ -25,16 +25,15 @@ function Dashboard() {
     try {
       const res = await axios.get(`${BASE_URL}/journal/getAll`, {
         headers: { Authorization: `Bearer ${token}` },
-      })
+      });
       console.log("Success:", res);
       setFiles(res.data);
     } catch (err) {
       if (err.response?.data) {
         console.log("Data (from error response):", err.response.data);
-        // setFiles(err.response.data); // Use the data anyway
       } else {
         console.error("Real error:", err);
-        if(err.response?.status === 404){
+        if (err.response?.status === 404) {
           setBlankEnable(true);
         }
         if (err.response?.status === 401) {
@@ -42,9 +41,10 @@ function Dashboard() {
           navigate("/login");
         }
       }
+    } finally {
+      setLoading(false); // Hide skeleton after API completes
     }
   };
-
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -58,34 +58,47 @@ function Dashboard() {
     console.log("Files updated (in useEffect):", files);
   }, [files]);
 
+  // Skeleton placeholder (3 cards)
+  const skeletonCards = Array(3)
+    .fill(null)
+    .map((_, index) => (
+      <div key={index} className="p-4 border rounded-md shadow-md">
+        <Skeleton height={20} width={150} />
+        <Skeleton height={15} count={3} style={{ marginTop: "10px" }} />
+        <Skeleton height={30} width={100} style={{ marginTop: "10px" }} />
+      </div>
+    ));
+
   return (
     <div>
       <Navbar />
-      
-      <AddNote refreshOnSuccess={fetchUserFiles}/>
+      <AddNote refreshOnSuccess={fetchUserFiles} />
       <div className="divider"></div>
 
-      {
-        blankEnable?<div className="flex justify-center">No content Available</div>:
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 px-4">
-        {files.map(
-          (i) => (
-            <Card
-              id={i.id}
-              title={i.title}
-              description={i.content}
-              sentiment={i.sentiments}
-              scheduledTime={i.scheduledTime}
-              date={i.date}
-              fileUrl={i.fileUrl}
-              reminderStatus={i.reminderStatus}
-              refreshOnSuccess={fetchUserFiles}
-            />
-          )
-        )}
-      </div>
-}
-      <Footer/>
+      {blankEnable ? (
+        <div className="flex justify-center">No content Available</div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 px-4">
+          {loading
+            ? skeletonCards
+            : files.map((i) => (
+                <Card
+                  key={i.id}
+                  id={i.id}
+                  title={i.title}
+                  description={i.content}
+                  sentiment={i.sentiments}
+                  scheduledTime={i.scheduledTime}
+                  date={i.date}
+                  fileUrl={i.fileUrl}
+                  reminderStatus={i.reminderStatus}
+                  refreshOnSuccess={fetchUserFiles}
+                />
+              ))}
+        </div>
+      )}
+
+      <Footer />
     </div>
   );
 }
