@@ -82,7 +82,7 @@ function AddNote({ refreshOnSuccess }) {
     formData.append("file", uploadNoteFile);
 
     try {
-      const res = await fetch("http://localhost:8080/journal/upload", {
+      const res = await fetch(`${BASE_URL}/journal/upload`, {
         method: "POST",
         body: formData,
         headers: {

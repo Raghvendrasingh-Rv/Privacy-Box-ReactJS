@@ -33,7 +33,7 @@ const Card = ({
 
   const onDelete = async () => {
     try {
-      await axios.delete(`http://localhost:8080/journal/delete/${id}`, {
+      await axios.delete(`${BASE_URL}/journal/delete/${id}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       refreshOnSuccess();

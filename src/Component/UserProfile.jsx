@@ -51,7 +51,7 @@ const UserProfile = () => {
   const getUserDetails = async()=>{
 
     try{
-      const res = await axios.get("http://localhost:8080/user/userInfo",{
+      const res = await axios.get(`${BASE_URL}/user/userInfo`,{
         headers: {Authorization: `Bearer ${token}`},
       })
       console.log("Success:",res);
