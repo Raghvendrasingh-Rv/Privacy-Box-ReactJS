@@ -62,10 +62,13 @@ function Dashboard() {
   const skeletonCards = Array(3)
     .fill(null)
     .map((_, index) => (
-      <div key={index} className="p-4 border rounded-md shadow-md">
-        <Skeleton height={20} width={150} />
-        <Skeleton height={15} count={3} style={{ marginTop: "10px" }} />
-        <Skeleton height={30} width={100} style={{ marginTop: "10px" }} />
+      <div
+        key={index}
+        className="p-4 bg-white rounded-2xl shadow-md flex flex-col gap-3"
+      >
+        <Skeleton height={20} width={150} borderRadius={8} />
+        <Skeleton height={14} count={2} borderRadius={8} />
+        <Skeleton height={30} width={100} borderRadius={8} />
       </div>
     ));
 
