@@ -1,12 +1,13 @@
 import { Disclosure, DisclosureButton, DisclosurePanel, Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react'
 import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/react/24/outline'
 import { useNavigate } from 'react-router-dom'
+import profile from '../assets/profile.svg'
 
 const navigation = [
   { name: 'Dashboard', href: '/dashboard', current: true },
-  { name: 'Team', href: '#', current: false },
-  { name: 'Projects', href: '#', current: false },
-  { name: 'Calendar', href: '#', current: false },
+  { name: 'Search', href: '#', current: false },
+  { name: 'Share', href: '#', current: false },
+  { name: 'Discussion', href: '#', current: false },
   { name: 'Contact', href: '#', current: false },
 ]
 
@@ -39,6 +40,25 @@ function Navbar() {
           </div>
           <div className="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
             <div className="flex shrink-0 items-center">
+              <svg width="100" height="24" viewBox="0 0 100 24" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="smallGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#6366F1" />
+      <stop offset="100%" stop-color="#06B6D4" />
+    </linearGradient>
+  </defs>
+  
+
+  <rect x="2" y="6" width="16" height="12" rx="2" fill="url(#smallGradient)"/>
+  
+
+  <text x="22" y="18" font-family="'Segoe UI', Arial, sans-serif" font-size="14" font-weight="600" fill="url(#smallGradient)">
+    Revisorr
+  </text>
+  
+
+  <circle cx="92" cy="8" r="2" fill="#06B6D4"/>
+</svg>
             </div>
             <div className="hidden sm:ml-6 sm:block">
               <div className="flex space-x-4">
@@ -78,8 +98,8 @@ function Navbar() {
                   <span className="absolute -inset-1.5" />
                   <span className="sr-only">Open user menu</span>
                   <img
-                    alt=""
-                    src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+                    alt="profile"
+                    src={profile}
                     className="size-8 rounded-full"
                   />
                 </MenuButton>

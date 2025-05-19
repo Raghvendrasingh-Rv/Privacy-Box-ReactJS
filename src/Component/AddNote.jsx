@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 const BASE_URL = import.meta.env.VITE_API_BASE_URL;
@@ -9,20 +9,22 @@ function AddNote({ refreshOnSuccess }) {
   const [fileType, setFileType] = useState("");
   const [fileUrl, setFileUrl] = useState("");
   const [sentiments, setSentiments] = useState("ANGRY");
-  const navigate = useNavigate();
   const [uploadNoteFile, setUploadNoteFile] = useState(null);
+  const [isUploading, setIsUploading] = useState(false);
+  const [isAddingEntry, setIsAddingEntry] = useState(false);
+  const navigate = useNavigate();
   const token = localStorage.getItem("token");
 
   const oneWeekLaterISO = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
     .toISOString()
-    .slice(0, 16); // 'YYYY-MM-DDTHH:mm' format
+    .slice(0, 16);
 
   const [scheduledTime, setScheduledTime] = useState(oneWeekLaterISO);
 
-  const handleAddCard = (e) => {
-    if (title != "" && description != "" && sentiments != "") {
+  const handleAddCard = async (e) => {
+    if (title !== "" && description !== "" && sentiments !== "") {
       e.preventDefault();
-      addEntry();
+      await addEntry();
     } else {
       console.log("missing entry item");
     }
@@ -34,13 +36,14 @@ function AddNote({ refreshOnSuccess }) {
       return;
     }
 
+    setIsAddingEntry(true);
     const body = {
       title: title,
       content: description,
       fileType: fileType,
       fileUrl: fileUrl,
       scheduledTime: scheduledTime,
-      reminderStatus:true,
+      reminderStatus: true,
       sentiments: sentiments,
     };
 
@@ -60,16 +63,13 @@ function AddNote({ refreshOnSuccess }) {
       setFileType("");
       setUploadNoteFile(null);
     } catch (err) {
-      if (err.response?.data) {
-        console.log("Data (from error response):", err.response.data);
-        // setFiles(err.response.data); // Use the data anyway
-      } else {
-        console.error("Real error:", err);
-        if (err.response?.status === 401) {
-          localStorage.removeItem("token");
-          navigate("/login");
-        }
+      console.error("Error adding entry:", err);
+      if (err.response?.status === 401) {
+        localStorage.removeItem("token");
+        navigate("/login");
       }
+    } finally {
+      setIsAddingEntry(false);
     }
   };
 
@@ -78,6 +78,9 @@ function AddNote({ refreshOnSuccess }) {
   };
 
   const uploadFile = async () => {
+    if (!uploadNoteFile) return;
+    
+    setIsUploading(true);
     const formData = new FormData();
     formData.append("file", uploadNoteFile);
 
@@ -94,15 +97,16 @@ function AddNote({ refreshOnSuccess }) {
       setFileUrl(obj.fileUrl);
       setFileType(obj.fileType);
     } catch (err) {
-      console.log(err);
+      console.error("Upload error:", err);
+    } finally {
+      setIsUploading(false);
     }
-    // Save journal entry with file URL
   };
 
   return (
     <div className="max-w-4xl mx-auto mt-12 p-6">
       <div className="bg-white/60 backdrop-blur-md border border-gray-200 shadow-xl p-8 rounded-2xl mb-6 transition hover:shadow-2xl">
-        <h2 className="text-2xl font-bold text-gray-800 mb-6 tracking-tight">
+        <h2 className="animate-pulse text-2xl font-bold text-gray-800 mb-6 tracking-tight">
           📝 Add a New Journal Entry
         </h2>
 
@@ -179,17 +183,36 @@ function AddNote({ refreshOnSuccess }) {
                     type="file"
                     className="hidden"
                     onChange={handleFileChange}
+                    disabled={isUploading}
                   />
                 </label>
 
-                {fileUrl !== "" ? (
-                  <button className="px-4 py-2 bg-blue-600 text-white rounded-lg shadow-md hover:bg-blue-700 transition duration-300">
-                    Uploaded
+                {isUploading ? (
+                  <button className="px-4 py-2 bg-blue-400 text-white rounded-lg shadow-md flex items-center" disabled>
+                    <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    Uploading...
                   </button>
+                ) : fileUrl ? (
+                  <div className="flex items-center">
+                    <span className="text-sm text-gray-600 mr-2 truncate max-w-xs">
+                      {uploadNoteFile?.name}
+                    </span>
+                    <button className="px-3 py-1 bg-green-100 text-green-800 text-sm rounded-lg">
+                      ✓ Uploaded
+                    </button>
+                  </div>
                 ) : (
                   <button
                     onClick={uploadFile}
-                    className="px-4 py-2 bg-blue-600 text-white rounded-lg shadow-md hover:bg-blue-700 transition duration-300"
+                    disabled={!uploadNoteFile}
+                    className={`px-4 py-2 rounded-lg shadow-md transition duration-300 ${
+                      uploadNoteFile 
+                        ? "bg-blue-600 text-white hover:bg-blue-700"
+                        : "bg-gray-300 text-gray-500 cursor-not-allowed"
+                    }`}
                   >
                     Upload
                   </button>
@@ -203,9 +226,22 @@ function AddNote({ refreshOnSuccess }) {
         <div className="mt-6">
           <button
             onClick={handleAddCard}
-            className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-medium py-3 rounded-xl hover:from-blue-700 hover:to-indigo-700 transition duration-300"
+            disabled={isAddingEntry}
+            className={`w-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-medium py-3 rounded-xl transition duration-300 flex items-center justify-center ${
+              isAddingEntry ? "opacity-75 cursor-not-allowed" : "hover:from-blue-700 hover:to-indigo-700"
+            }`}
           >
-            ➕ Add Entry
+            {isAddingEntry ? (
+              <>
+                <svg className="animate-spin -ml-1 mr-2 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                Adding Entry...
+              </>
+            ) : (
+              "➕ Add Entry"
+            )}
           </button>
         </div>
       </div>

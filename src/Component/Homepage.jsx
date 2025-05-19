@@ -10,7 +10,7 @@ function HomePage() {
       <div className="flex flex-col-reverse md:flex-row items-center justify-between px-6 py-12 max-w-7xl mx-auto">
         <div className="md:w-1/2 text-center md:text-left">
           <h1 className="text-4xl font-extrabold mb-4">
-            Welcome to <span className="text-indigo-600">Revisor</span>
+            Welcome to <span className="text-indigo-600">Revisorr</span>
           </h1>
           <p className="text-lg mb-6">
             Master your learning with focused revision. Retain more, forget less.
