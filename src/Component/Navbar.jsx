@@ -6,7 +6,7 @@ import profile from '../assets/profile.svg'
 const navigation = [
   { name: 'Dashboard', href: '/dashboard', current: true },
   { name: 'Search', href: '#', current: false },
-  { name: 'Share', href: '#', current: false },
+  { name: 'Sent/Received', href: '/sharedEntry', current: false },
   { name: 'Discussion', href: '#', current: false },
   { name: 'Contact', href: '#', current: false },
 ]
@@ -21,6 +21,7 @@ function Navbar() {
 
   const logOut = ()=>{
     localStorage.removeItem("token");
+    localStorage.removeItem("userId");
     navigate('/login');
     
   }
@@ -43,8 +44,8 @@ function Navbar() {
               <svg width="100" height="24" viewBox="0 0 100 24" xmlns="http://www.w3.org/2000/svg">
   <defs>
     <linearGradient id="smallGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-      <stop offset="0%" stop-color="#6366F1" />
-      <stop offset="100%" stop-color="#06B6D4" />
+      <stop offset="0%" stopColor="#6366F1" />
+      <stop offset="100%" stopColor="#06B6D4" />
     </linearGradient>
   </defs>
   
@@ -52,7 +53,7 @@ function Navbar() {
   <rect x="2" y="6" width="16" height="12" rx="2" fill="url(#smallGradient)"/>
   
 
-  <text x="22" y="18" font-family="'Segoe UI', Arial, sans-serif" font-size="14" font-weight="600" fill="url(#smallGradient)">
+  <text x="22" y="18" fontFamily="'Segoe UI', Arial, sans-serif" fontSize="14" fontWeight="600" fill="url(#smallGradient)">
     Revisorr
   </text>
   

@@ -1,6 +1,7 @@
-import React, { useState } from "react";
-import { FaTrashAlt, FaEdit } from "react-icons/fa";
+import React, { useState, useEffect } from "react";
+import { FaTrashAlt, FaEdit, FaShare } from "react-icons/fa";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 const sentimentColors = {
@@ -11,17 +12,21 @@ const sentimentColors = {
 };
 
 const Card = ({
-  id,
-  title,
-  description,
-  scheduledTime,
-  sentiment,
-  date,
-  fileUrl,
-  reminderStatus,
+  journal,
   refreshOnSuccess,
 }) => {
+
+  const id = journal.id;
+  const title = journal.title;
+  const description = journal.description;
+  const scheduledTime = journal.scheduledTime;
+  const sentiment = journal.sentiment;
+  const date = journal.date;
+  const fileUrl = journal.fileUrl;
+  const reminderStatus = journal.reminderStatus;
+
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isShareModalOpen, setIsShareModalOpen] = useState(false);
   const [editData, setEditData] = useState({
     title,
     description,
@@ -31,8 +36,14 @@ const Card = ({
   });
   const [isDeleting, setIsDeleting] = useState(false);
   const [isUpdating, setIsUpdating] = useState(false);
+  const [isSharing, setIsSharing] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [users, setUsers] = useState([]);
+  const [selectedUser, setSelectedUser] = useState(null);
+   const [displayedFiles, setDisplayedFiles] = useState([]);
 
   const token = localStorage.getItem("token");
+  const navigate = useNavigate();
 
   const onDelete = async () => {
     if (window.confirm("Are you sure you want to delete this entry?")) {
@@ -74,17 +85,93 @@ const Card = ({
   };
 
   const handleReminderToggle = () => {
-    setEditData(prev => ({
+    setEditData((prev) => ({
       ...prev,
-      reminderStatus: !prev.reminderStatus
+      reminderStatus: !prev.reminderStatus,
     }));
+  };
+
+  const getAllUser = async () => {
+    try {
+      const response = await axios.get(`http://localhost:8080/user/getAllUser`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      console.log("Success:",response);
+    } catch(err){
+      if(err.response?.data){
+        console.log("Data (from error response):", err.response.data);
+        setUsers(err.response.data);
+      }else{
+        console.error("Real error:", err);
+      }
+    }
+
+  };
+
+  useEffect(() => {
+    if (isShareModalOpen) {
+      getAllUser();
+    }
+  }, [isShareModalOpen]);
+
+  useEffect(()=>{
+    if (searchQuery.trim() === "") {
+      // When search is empty, show empty
+      setDisplayedFiles([]);
+    } else {
+      // When searching, filter files
+      const filtered = users.filter(
+        (user) =>
+          user.username.includes(searchQuery)
+      );
+      setDisplayedFiles(filtered);
+    }
+  },[searchQuery])
+
+  const onShare = async () => {
+    if (!selectedUser) return;
+
+    const senderId = localStorage.getItem("userId");
+
+    setIsSharing(true);
+    const  body={
+      "journalId":journal,
+      "senderId":senderId,
+      "receiverId": selectedUser.id,
+      "seen": false
+    }
+    try {
+      await axios.post(
+        `http://localhost:8080/shared/createSharedEntry`,
+        body,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      alert(`Entry shared with ${selectedUser.username}!`);
+      setIsShareModalOpen(false);
+      setSelectedUser(null);
+      setSearchQuery("");
+    } catch (err) {
+      console.error("Sharing failed:", err);
+      alert("Failed to share entry. Please try again.");
+    } finally {
+      setIsSharing(false);
+    }
   };
 
   return (
     <>
-      <div className="relative bg-white shadow-lg rounded-2xl p-6 w-full max-w-md mx-auto border border-gray-200 hover:border-indigo-400 transition-all duration-300 ease-in-out m-4">
+      <div onClick={()=>navigate('/openEntry', { state: { journal: journal } })} className="relative bg-white shadow-lg rounded-2xl p-6 w-full max-w-md mx-auto border border-gray-200 hover:border-indigo-400 transition-all duration-300 ease-in-out m-4">
         {/* Action Buttons */}
         <div className="absolute top-3 right-3 flex gap-2">
+          <button
+            onClick={() => setIsShareModalOpen(true)}
+            className="text-purple-600 hover:text-purple-800 p-2 rounded-full bg-purple-50 hover:bg-purple-100 transition-colors"
+            title="Share"
+            aria-label="Share entry"
+            disabled={isDeleting}
+          >
+            <FaShare size={16} />
+          </button>
           <button
             onClick={onEdit}
             className="text-blue-600 hover:text-blue-800 p-2 rounded-full bg-blue-50 hover:bg-blue-100 transition-colors"
@@ -153,7 +240,9 @@ const Card = ({
                     d="M3 7v4a1 1 0 001 1h1v5a2 2 0 002 2h10a2 2 0 002-2v-5h1a1 1 0 001-1V7a2 2 0 00-2-2H5a2 2 0 00-2 2z"
                   />
                 </svg>
-                <p className="ml-2 text-sm">File uploaded (unsupported preview)</p>
+                <p className="ml-2 text-sm">
+                  File uploaded (unsupported preview)
+                </p>
               </div>
             )
           ) : (
@@ -247,7 +336,10 @@ const Card = ({
                     onChange={handleReminderToggle}
                     className="mr-2"
                   />
-                  <label htmlFor="reminderToggle" className="text-sm text-gray-700">
+                  <label
+                    htmlFor="reminderToggle"
+                    className="text-sm text-gray-700"
+                  >
                     Enable Reminder
                   </label>
                 </div>
@@ -285,6 +377,98 @@ const Card = ({
                     </>
                   ) : (
                     "Save Changes"
+                  )}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Share Modal */}
+      {isShareModalOpen && (
+        <div className="fixed inset-0 z-50 bg-black bg-opacity-30 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-white rounded-xl shadow-2xl w-full max-w-md border border-gray-200 animate-fade-in">
+            <div className="p-6">
+              <h3 className="text-2xl font-semibold text-gray-800 mb-4">
+                Share Journal Entry
+              </h3>
+
+              <div className="relative mb-4">
+                <input
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-400"
+                  placeholder="Search users..."
+                  autoFocus
+                />
+                {searchQuery && (
+                  <button
+                    onClick={() => setSearchQuery("")}
+                    className="absolute right-3 top-3 text-gray-400 hover:text-gray-600"
+                  >
+                    ✕
+                  </button>
+                )}
+              </div>
+
+              <div className="max-h-60 overflow-y-auto mb-4">
+                {displayedFiles.length > 0 ? (
+                  displayedFiles.map((user) => (
+                    <div
+                      key={user._id}
+                      className={`p-3 hover:bg-gray-50 cursor-pointer rounded-lg ${
+                        selectedUser?._id === user._id ? "bg-indigo-50" : ""
+                      }`}
+                      onClick={() => setSelectedUser(user)}
+                    >
+                      <div className="flex items-center">
+                        <div className="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 font-medium mr-3">
+                          {user.username.charAt(0).toUpperCase()}
+                        </div>
+                        <div>
+                          <p className="font-medium">{user.username}</p>
+                          <p className="text-xs text-gray-500">{user.email}</p>
+                        </div>
+                      </div>
+                    </div>
+                  ))
+                ) : searchQuery ? (
+                  <p className="text-center text-gray-500 py-4">
+                    No users found
+                  </p>
+                ) : (
+                  <p className="text-center text-gray-500 py-4">
+                    Start typing to search users
+                  </p>
+                )}
+              </div>
+
+              <div className="flex justify-end gap-3 mt-6">
+                <button
+                  onClick={() => {
+                    setIsShareModalOpen(false);
+                    setSearchQuery("");
+                    setSelectedUser(null);
+                  }}
+                  className="px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 transition disabled:opacity-50"
+                  disabled={isSharing}
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={onShare}
+                  className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition flex items-center justify-center min-w-[100px] disabled:opacity-50"
+                  disabled={isSharing || !selectedUser}
+                >
+                  {isSharing ? (
+                    <>
+                      <div className="animate-spin h-4 w-4 border-2 border-white border-t-transparent rounded-full mr-2"></div>
+                      Sharing...
+                    </>
+                  ) : (
+                    "Share"
                   )}
                 </button>
               </div>

@@ -59,7 +59,6 @@ const UserProfile = () => {
       if(err.response?.data){
         console.log("Data (from error response):", err.response.data);
         setData(err.response.data);
-        console.log(data);
       }else{
         console.error("Real error:", err);
         if (err.response?.status === 401) {

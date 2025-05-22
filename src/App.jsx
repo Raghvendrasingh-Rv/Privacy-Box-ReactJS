@@ -5,6 +5,9 @@ import Register from './Component/Register'
 import Login from './Component/Login'
 import HomePage from './Component/Homepage';
 import UserProfile from './Component/UserProfile';
+import SharedEntry from './Component/SharedEntry';
+import ShowEntry from './Component/ShowEntry';
+import OpenEntry from './Component/OpenEntry';
 
 function App() {
 
@@ -16,6 +19,9 @@ function App() {
         <Route path="/register" element={<Register/>} />
         <Route path="/dashboard" element={<Dashboard/>} />
         <Route path="/profile" element={<UserProfile/>} />
+        <Route path="/sharedEntry" element={<SharedEntry/>} />
+        <Route path="/showEntry" element={<ShowEntry/>} />
+        <Route path="/openEntry" element={<OpenEntry/>} />
       </Routes>
     </Router>
   )

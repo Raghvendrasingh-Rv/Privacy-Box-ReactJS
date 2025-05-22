@@ -51,6 +51,21 @@ function Dashboard() {
     } finally {
       setLoading(false);
     }
+
+    //user info
+    try{
+      const res = await axios.get(`${BASE_URL}/user/userInfo`,{
+        headers: {Authorization: `Bearer ${token}`},
+      })
+      console.log("Success:",res);
+    }catch(err){
+      if(err.response?.data){
+        console.log("Data (from error response):", err.response.data);
+        localStorage.setItem("userId", err.response.data.id);
+      }else{
+        console.error("Real error:", err);
+      }
+    }
   };
 
   // Filter files based on search term
@@ -127,14 +142,7 @@ function Dashboard() {
               displayedFiles.map((i) => (
                 <Card
                   key={i.id}
-                  id={i.id}
-                  title={i.title}
-                  description={i.content}
-                  sentiment={i.sentiments}
-                  scheduledTime={i.scheduledTime}
-                  date={i.date}
-                  fileUrl={i.fileUrl}
-                  reminderStatus={i.reminderStatus}
+                  journal={i}
                   refreshOnSuccess={fetchUserFiles}
                 />
               ))
