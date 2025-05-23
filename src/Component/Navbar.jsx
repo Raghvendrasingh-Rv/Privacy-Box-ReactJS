@@ -5,10 +5,10 @@ import profile from '../assets/profile.svg'
 
 const navigation = [
   { name: 'Dashboard', href: '/dashboard', current: true },
-  { name: 'Search', href: '#', current: false },
+  // { name: 'Search', href: '#', current: false },
   { name: 'Sent/Received', href: '/sharedEntry', current: false },
-  { name: 'Discussion', href: '#', current: false },
-  { name: 'Contact', href: '#', current: false },
+  // { name: 'Discussion', href: '#', current: false },
+  { name: 'About Us', href: '/contactPage', current: false },
 ]
 
 function classNames(...classes) {
@@ -114,24 +114,24 @@ function Navbar() {
                     href="/profile"
                     className="block px-4 py-2 text-sm text-gray-700 data-focus:bg-gray-100 data-focus:outline-hidden"
                   >
-                    Your Profile
+                    My Profile
                   </a>
                 </MenuItem>
-                <MenuItem>
+                {/* <MenuItem>
                   <a
                     href="#"
                     className="block px-4 py-2 text-sm text-gray-700 data-focus:bg-gray-100 data-focus:outline-hidden"
                   >
                     Settings
                   </a>
-                </MenuItem>
+                </MenuItem> */}
                 <MenuItem>
                   <a
                     href="#"
                     onClick={()=>logOut()}
                     className="block px-4 py-2 text-sm text-gray-700 data-focus:bg-gray-100 data-focus:outline-hidden"
                   >
-                    Sign out
+                    Log out
                   </a>
                 </MenuItem>
               </MenuItems>

@@ -3,6 +3,7 @@ import { FiFile, FiDownload, FiCalendar, FiClock } from "react-icons/fi";
 import { useNavigate, useLocation } from "react-router-dom";
 import Footer from "./Footer";
 import Navbar from "./Navbar";
+const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 const OpenEntry = () => {
   const navigate = useNavigate();
@@ -64,8 +65,9 @@ const formatIST = (utcDateString) => {
   const fileInfo = getFileInfo();
 
   return (
-    <>
-      <Navbar/>
+    <div className="flex flex-col min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+      <Navbar />
+      <div className="flex-grow">
       <div className="max-w-4xl mx-auto p-6">
         <div className="bg-white rounded-xl shadow-md overflow-hidden border border-gray-200">
           {/* Header with back button */}
@@ -74,9 +76,10 @@ const formatIST = (utcDateString) => {
               onClick={() => navigate(-1)}
               className="text-indigo-600 hover:text-indigo-800 font-medium"
             >
-              ← Back to Journal
+              ← Back to entry
             </button>
             <div className="flex items-center space-x-2 text-sm text-gray-500">
+              <p>Created at:</p>
               <FiCalendar className="text-gray-400" />
               <span>{date}</span>
               <FiClock className="text-gray-400 ml-2" />
@@ -111,7 +114,7 @@ const formatIST = (utcDateString) => {
             {/* Description */}
             <div className="prose max-w-none mb-8">
               <p className="text-gray-700 whitespace-pre-line">
-                {journal.description}
+                {journal.content}
               </p>
             </div>
 
@@ -180,8 +183,9 @@ const formatIST = (utcDateString) => {
           </div>
         </div>
       </div>
+      </div>
       <Footer/>
-    </>
+    </div>
   );
 };
 

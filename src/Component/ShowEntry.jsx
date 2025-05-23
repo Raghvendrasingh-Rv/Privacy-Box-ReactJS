@@ -16,14 +16,14 @@ const ShowEntry = () => {
     return <div>No entry found</div>;
   }
 
-  const entryDate = new Date(entry.journalId.date).toLocaleDateString("en-US", {
+  const entryDate = new Date(entry.journal.date).toLocaleDateString("en-US", {
     year: "numeric",
     month: "long",
     day: "numeric",
     timeZone: "UTC", // Add this line
   });
 
-  const entryTime = new Date(entry.journalId.date).toLocaleTimeString("en-US", {
+  const entryTime = new Date(entry.journal.date).toLocaleTimeString("en-US", {
     hour: "2-digit",
     minute: "2-digit",
     timeZone: "UTC", // Add this line
@@ -31,9 +31,9 @@ const ShowEntry = () => {
 
   // Determine file type and icon
   const getFileInfo = () => {
-    if (!entry.journalId.fileUrl) return null;
+    if (!entry.journal.fileUrl) return null;
 
-    const extension = entry.journalId.fileUrl.split(".").pop().toLowerCase();
+    const extension = entry.journal.fileUrl.split(".").pop().toLowerCase();
     let fileType = "Document";
     let icon = <FiFile className="text-gray-500" />;
 
@@ -54,8 +54,9 @@ const ShowEntry = () => {
   const fileInfo = getFileInfo();
 
   return (
-    <>
+    <div className="flex flex-col min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
       <Navbar />
+      <div className="flex-grow">
       <div className="max-w-4xl mx-auto p-6">
         <div className="bg-white rounded-xl shadow-md overflow-hidden border border-gray-200">
           {/* Header with back button */}
@@ -67,6 +68,7 @@ const ShowEntry = () => {
               ← Back to entry
             </button>
             <div className="flex items-center space-x-2 text-sm text-gray-500">
+              <p>Created at:</p>
               <FiCalendar className="text-gray-400" />
               <span>{entryDate}</span>
               <FiClock className="text-gray-400 ml-2" />
@@ -78,30 +80,30 @@ const ShowEntry = () => {
           <div className="p-6">
             {/* Title */}
             <h1 className="text-3xl font-bold text-gray-800 mb-4">
-              {entry.journalId.title}
+              {entry.journal.title}
             </h1>
 
             {/* Sentiment Badge */}
-            {entry.journalId.sentiment && (
+            {entry.journal.sentiment && (
               <span
                 className={`inline-block px-3 py-1 rounded-full text-sm font-medium mb-6 ${
-                  entry.journalId.sentiment === "HAPPY"
+                  entry.journal.sentiment === "HAPPY"
                     ? "bg-green-100 text-green-800"
-                    : entry.journalId.sentiment === "SAD"
+                    : entry.journal.sentiment === "SAD"
                     ? "bg-blue-100 text-blue-800"
-                    : entry.journalId.sentiment === "ANGRY"
+                    : entry.journal.sentiment === "ANGRY"
                     ? "bg-red-100 text-red-800"
                     : "bg-gray-100 text-gray-800"
                 }`}
               >
-                {entry.journalId.sentiment}
+                {entry.journal.sentiment}
               </span>
             )}
 
             {/* Description */}
             <div className="prose max-w-none mb-8">
               <p className="text-gray-700 whitespace-pre-line">
-                {entry.journalId.content}
+                {entry.journal.content}
               </p>
             </div>
 
@@ -112,7 +114,7 @@ const ShowEntry = () => {
                 Attached Document
               </h3>
 
-              {entry.journalId.fileUrl ? (
+              {entry.journal.fileUrl ? (
                 <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg border border-gray-200 hover:bg-gray-100 transition-colors">
                   <div className="flex items-center">
                     <div className="p-3 bg-white rounded-lg shadow-sm mr-4">
@@ -128,7 +130,7 @@ const ShowEntry = () => {
                     </div>
                   </div>
                   <a
-                    href={entry.journalId.fileUrl}
+                    href={entry.journal.fileUrl}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="flex items-center text-indigo-600 hover:text-indigo-800 font-medium"
@@ -146,22 +148,22 @@ const ShowEntry = () => {
             </div>
 
             {/* Scheduled Time (if exists) */}
-            {entry.journalId.scheduledTime && (
+            {entry.journal.scheduledTime && (
               <div className="mt-6 pt-6 border-t border-gray-200">
                 <h3 className="text-lg font-medium text-gray-800 mb-2">
                   Scheduled Reminder
                 </h3>
                 <p className="text-gray-600">
-                  ⏰ {new Date(entry.journalId.scheduledTime).toLocaleString()}
+                  ⏰ {new Date(entry.journal.scheduledTime).toLocaleString()}
                 </p>
                 <p
                   className={`text-sm mt-1 ${
-                    new Date(entry.journalId.scheduledTime) > new Date()
+                    new Date(entry.journal.scheduledTime) > new Date()
                       ? "text-green-600"
                       : "text-gray-500"
                   }`}
                 >
-                  {new Date(entry.journalId.scheduledTime) > new Date()
+                  {new Date(entry.journal.scheduledTime) > new Date()
                     ? "Upcoming"
                     : "Completed"}
                 </p>
@@ -170,8 +172,9 @@ const ShowEntry = () => {
           </div>
         </div>
       </div>
+      </div>
       <Footer />
-    </>
+    </div>
   );
 };
 

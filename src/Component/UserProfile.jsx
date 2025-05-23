@@ -5,6 +5,7 @@ import Navbar from './Navbar';
 const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 
+
 const UserProfile = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [user, setUser] = useState({

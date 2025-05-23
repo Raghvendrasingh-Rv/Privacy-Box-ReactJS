@@ -8,7 +8,7 @@ function AddNote({ refreshOnSuccess }) {
   const [description, setDescription] = useState("");
   const [fileType, setFileType] = useState("");
   const [fileUrl, setFileUrl] = useState("");
-  const [sentiments, setSentiments] = useState("ANGRY");
+  const sentiments = "ANGRY";
   const [uploadNoteFile, setUploadNoteFile] = useState(null);
   const [isUploading, setIsUploading] = useState(false);
   const [isAddingEntry, setIsAddingEntry] = useState(false);
@@ -106,66 +106,72 @@ function AddNote({ refreshOnSuccess }) {
   return (
     <div className="max-w-4xl mx-auto mt-12 p-6">
       <div className="bg-white/60 backdrop-blur-md border border-gray-200 shadow-xl p-8 rounded-2xl mb-6 transition hover:shadow-2xl">
-        <h2 className="animate-pulse text-2xl font-bold text-gray-800 mb-6 tracking-tight">
+        <h2 className="text-2xl font-bold text-gray-900 mb-6 tracking-tight">
           📝 Add a New Journal Entry
         </h2>
 
         <div className="flex flex-col md:flex-row md:space-x-6">
           {/* Left column */}
           <div className="md:w-1/2 space-y-4">
+          <label className="block text-gray-900 text-sm font-medium mb-1">
+                Title
+              </label>
             {/* Title */}
             <input
               type="text"
               placeholder="Title"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              className="w-full px-5 py-3 text-base border border-gray-300 rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-5 py-3 text-base border border-gray-300 rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 text-black"
             />
 
             {/* Sentiment */}
-            <div>
-              <label className="block text-gray-700 text-sm font-medium mb-1">
+            {/* <div>
+              <label className="block text-gray-900 text-sm font-medium mb-1">
                 Sentiment
               </label>
               <select
                 value={sentiments}
                 onChange={(e) => setSentiments(e.target.value)}
-                className="w-full px-5 py-3 text-base border border-gray-300 rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-5 py-3 text-base border border-gray-300 rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 text-black"
               >
                 <option value="HAPPY">😊 Happy</option>
                 <option value="SAD">😔 Sad</option>
                 <option value="ANGRY">😡 Angry</option>
                 <option value="ANXIOUS">😟 Anxious</option>
               </select>
-            </div>
+            </div> */}
 
             {/* Schedule Time */}
             <div>
-              <label className="block text-gray-700 text-sm font-medium mb-1">
+              <label className="block text-gray-900 text-sm font-medium mb-1">
                 Schedule Time
               </label>
               <input
                 type="datetime-local"
                 value={scheduledTime}
                 onChange={(e) => setScheduledTime(e.target.value)}
-                className="w-full px-5 py-3 text-base border border-gray-300 rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-5 py-3 text-base border border-gray-300 rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 text-black"
               />
             </div>
           </div>
 
           {/* Right column */}
           <div className="md:w-1/2 space-y-4 mt-6 md:mt-0">
+          <label className="block text-gray-900 text-sm font-medium mb-1">
+                Description
+              </label>
             {/* Description */}
             <textarea
               placeholder="Write your thoughts here..."
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              className="w-full px-5 py-3 text-base border border-gray-300 rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 min-h-[140px]"
+              className="w-full px-5 py-3 text-base border border-gray-300 rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 min-h-[140px] text-black"
             ></textarea>
 
             {/* File Upload */}
             <div>
-              <label className="block text-gray-700 text-sm font-medium mb-2">
+              <label className="block text-gray-900 text-sm font-medium mb-2">
                 Upload File
               </label>
               <div className="flex items-center space-x-4">

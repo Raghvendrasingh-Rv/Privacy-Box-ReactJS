@@ -8,6 +8,7 @@ import UserProfile from './Component/UserProfile';
 import SharedEntry from './Component/SharedEntry';
 import ShowEntry from './Component/ShowEntry';
 import OpenEntry from './Component/OpenEntry';
+import ContactPage from './Component/ContactPage';
 
 function App() {
 
@@ -22,6 +23,7 @@ function App() {
         <Route path="/sharedEntry" element={<SharedEntry/>} />
         <Route path="/showEntry" element={<ShowEntry/>} />
         <Route path="/openEntry" element={<OpenEntry/>} />
+        <Route path="/contactPage" element={<ContactPage/>} />
       </Routes>
     </Router>
   )

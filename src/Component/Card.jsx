@@ -11,14 +11,10 @@ const sentimentColors = {
   ANXIOUS: "text-yellow-600 bg-yellow-100",
 };
 
-const Card = ({
-  journal,
-  refreshOnSuccess,
-}) => {
-
+const Card = ({ journal, sender, refreshOnSuccess }) => {
   const id = journal.id;
   const title = journal.title;
-  const description = journal.description;
+  const description = journal.content;
   const scheduledTime = journal.scheduledTime;
   const sentiment = journal.sentiment;
   const date = journal.date;
@@ -40,7 +36,7 @@ const Card = ({
   const [searchQuery, setSearchQuery] = useState("");
   const [users, setUsers] = useState([]);
   const [selectedUser, setSelectedUser] = useState(null);
-   const [displayedFiles, setDisplayedFiles] = useState([]);
+  const [displayedFiles, setDisplayedFiles] = useState([]);
 
   const token = localStorage.getItem("token");
   const navigate = useNavigate();
@@ -93,19 +89,18 @@ const Card = ({
 
   const getAllUser = async () => {
     try {
-      const response = await axios.get(`http://localhost:8080/user/getAllUser`, {
+      const response = await axios.get(`${BASE_URL}/user/getAllUser`, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      console.log("Success:",response);
-    } catch(err){
-      if(err.response?.data){
+      console.log("Success:", response);
+    } catch (err) {
+      if (err.response?.data) {
         console.log("Data (from error response):", err.response.data);
         setUsers(err.response.data);
-      }else{
+      } else {
         console.error("Real error:", err);
       }
     }
-
   };
 
   useEffect(() => {
@@ -114,38 +109,37 @@ const Card = ({
     }
   }, [isShareModalOpen]);
 
-  useEffect(()=>{
+  useEffect(() => {
     if (searchQuery.trim() === "") {
       // When search is empty, show empty
       setDisplayedFiles([]);
     } else {
       // When searching, filter files
-      const filtered = users.filter(
-        (user) =>
-          user.username.includes(searchQuery)
+      const filtered = users.filter((user) =>
+        user.username.includes(searchQuery)
       );
       setDisplayedFiles(filtered);
     }
-  },[searchQuery])
+  }, [searchQuery]);
 
   const onShare = async () => {
     if (!selectedUser) return;
 
-    const senderId = localStorage.getItem("userId");
+    console.log(journal);
+    console.log(selectedUser);
+    console.log(sender);
 
     setIsSharing(true);
-    const  body={
-      "journalId":journal,
-      "senderId":senderId,
-      "receiverId": selectedUser.id,
-      "seen": false
-    }
+    const body = {
+      journal: journal,
+      sender: sender,
+      receiver: selectedUser,
+      seen: false,
+    };
     try {
-      await axios.post(
-        `http://localhost:8080/shared/createSharedEntry`,
-        body,
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
+      await axios.post(`${BASE_URL}/shared/createSharedEntry`, body, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
       alert(`Entry shared with ${selectedUser.username}!`);
       setIsShareModalOpen(false);
       setSelectedUser(null);
@@ -158,13 +152,27 @@ const Card = ({
     }
   };
 
+  const formatDatetimeLocal = (datetimeStr) => {
+  if (!datetimeStr) return "";
+  const date = new Date(datetimeStr);
+  const offset = date.getTimezoneOffset();
+  const localDate = new Date(date.getTime() - offset * 60000); // adjust to local time
+  return localDate.toISOString().slice(0, 16);
+};
+
   return (
     <>
-      <div onClick={()=>navigate('/openEntry', { state: { journal: journal } })} className="relative bg-white shadow-lg rounded-2xl p-6 w-full max-w-md mx-auto border border-gray-200 hover:border-indigo-400 transition-all duration-300 ease-in-out m-4">
+      <div
+        onClick={() => navigate("/openEntry", { state: { journal: journal } })}
+        className="relative bg-white shadow-lg rounded-2xl p-6 w-full max-w-md mx-auto border border-gray-200 hover:border-indigo-400 transition-all duration-300 ease-in-out m-4"
+      >
         {/* Action Buttons */}
         <div className="absolute top-3 right-3 flex gap-2">
           <button
-            onClick={() => setIsShareModalOpen(true)}
+            onClick={(e) => {
+              e.stopPropagation();
+              setIsShareModalOpen(true);
+            }}
             className="text-purple-600 hover:text-purple-800 p-2 rounded-full bg-purple-50 hover:bg-purple-100 transition-colors"
             title="Share"
             aria-label="Share entry"
@@ -173,7 +181,10 @@ const Card = ({
             <FaShare size={16} />
           </button>
           <button
-            onClick={onEdit}
+            onClick={(e) => {
+              e.stopPropagation();
+              onEdit();
+            }}
             className="text-blue-600 hover:text-blue-800 p-2 rounded-full bg-blue-50 hover:bg-blue-100 transition-colors"
             title="Edit"
             aria-label="Edit entry"
@@ -182,7 +193,10 @@ const Card = ({
             <FaEdit size={16} />
           </button>
           <button
-            onClick={onDelete}
+            onClick={(e) => {
+              e.stopPropagation();
+              onDelete();
+            }}
             className="text-red-600 hover:text-red-800 p-2 rounded-full bg-red-50 hover:bg-red-100 transition-colors flex items-center justify-center min-w-[32px] min-h-[32px]"
             title="Delete"
             aria-label="Delete entry"
@@ -295,7 +309,7 @@ const Card = ({
 
       {/* Edit Modal */}
       {isModalOpen && (
-        <div className="fixed inset-0 z-50 bg-black bg-opacity-30 backdrop-blur-sm flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-50 bg-opacity-30 backdrop-blur-2xl flex items-center justify-center p-4">
           <div className="bg-white rounded-xl shadow-2xl w-full max-w-md border border-gray-200 animate-fade-in">
             <div className="p-6">
               <h3 className="text-2xl font-semibold text-gray-800 mb-4">
@@ -307,7 +321,7 @@ const Card = ({
                   name="title"
                   value={editData.title}
                   onChange={handleChange}
-                  className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-400"
+                  className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-400 text-black"
                   placeholder="Title"
                 />
 
@@ -315,7 +329,7 @@ const Card = ({
                   name="description"
                   value={editData.description}
                   onChange={handleChange}
-                  className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-400"
+                  className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-400 text-black"
                   placeholder="Description"
                   rows={4}
                 />
@@ -323,9 +337,9 @@ const Card = ({
                 <input
                   name="scheduledTime"
                   type="datetime-local"
-                  value={editData.scheduledTime}
+                  value={formatDatetimeLocal(editData.scheduledTime)}
                   onChange={handleChange}
-                  className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-400"
+                  className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-400 text-black"
                 />
 
                 <div className="flex items-center">
@@ -344,17 +358,17 @@ const Card = ({
                   </label>
                 </div>
 
-                <select
+                {/* <select
                   name="sentiment"
                   value={editData.sentiment}
                   onChange={handleChange}
-                  className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-400"
+                  className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-400 text-black"
                 >
                   <option value="HAPPY">😊 Happy</option>
                   <option value="SAD">😔 Sad</option>
                   <option value="ANGRY">😡 Angry</option>
                   <option value="ANXIOUS">😟 Anxious</option>
-                </select>
+                </select> */}
               </div>
 
               <div className="flex justify-end gap-3 mt-6">
@@ -387,7 +401,7 @@ const Card = ({
 
       {/* Share Modal */}
       {isShareModalOpen && (
-        <div className="fixed inset-0 z-50 bg-black bg-opacity-30 backdrop-blur-sm flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-50 bg-opacity-30 backdrop-blur-2xl flex items-center justify-center p-4">
           <div className="bg-white rounded-xl shadow-2xl w-full max-w-md border border-gray-200 animate-fade-in">
             <div className="p-6">
               <h3 className="text-2xl font-semibold text-gray-800 mb-4">
@@ -399,7 +413,7 @@ const Card = ({
                   type="text"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-400"
+                  className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-400 text-black"
                   placeholder="Search users..."
                   autoFocus
                 />
@@ -428,7 +442,9 @@ const Card = ({
                           {user.username.charAt(0).toUpperCase()}
                         </div>
                         <div>
-                          <p className="font-medium">{user.username}</p>
+                          <p className="font-medium text-black">
+                            {user.username}
+                          </p>
                           <p className="text-xs text-gray-500">{user.email}</p>
                         </div>
                       </div>

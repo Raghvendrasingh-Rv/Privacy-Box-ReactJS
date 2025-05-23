@@ -11,16 +11,17 @@ import "react-loading-skeleton/dist/skeleton.css";
 import { FiSearch, FiX } from "react-icons/fi";
 
 function Dashboard() {
- const navigate = useNavigate();
+  const navigate = useNavigate();
   const [allFiles, setAllFiles] = useState([]); // Stores ALL files from API
   const [displayedFiles, setDisplayedFiles] = useState([]); // Files to display (all or filtered)
   const [searchTerm, setSearchTerm] = useState("");
   const token = localStorage.getItem("token");
   const [blankEnable, setBlankEnable] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [user, setUser] = useState();
   // const [oneItemLoad, seOneItemLoad] = useState(true);
 
-  const updateFiles =(newFiles)=>{
+  const updateFiles = (newFiles) => {
     setAllFiles(newFiles);
     // if(oneItemLoad&&allFiles.length==1){
     //   seOneItemLoad(false);
@@ -53,16 +54,16 @@ function Dashboard() {
     }
 
     //user info
-    try{
-      const res = await axios.get(`${BASE_URL}/user/userInfo`,{
-        headers: {Authorization: `Bearer ${token}`},
-      })
-      console.log("Success:",res);
-    }catch(err){
-      if(err.response?.data){
+    try {
+      const res = await axios.get(`${BASE_URL}/user/userInfo`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      console.log("Success:", res);
+    } catch (err) {
+      if (err.response?.data) {
         console.log("Data (from error response):", err.response.data);
-        localStorage.setItem("userId", err.response.data.id);
-      }else{
+        setUser(err.response.data);
+      } else {
         console.error("Real error:", err);
       }
     }
@@ -90,73 +91,83 @@ function Dashboard() {
   }, [navigate, token]);
 
   // Skeleton loader
-  const skeletonCards = Array(3).fill(null).map((_, index) => (
-    <div key={index} className="p-4 bg-white rounded-2xl shadow-md flex flex-col gap-3">
-      <Skeleton height={20} width={150} borderRadius={8} />
-      <Skeleton height={14} count={2} borderRadius={8} />
-      <Skeleton height={30} width={100} borderRadius={8} />
-    </div>
-  ));
+  const skeletonCards = Array(3)
+    .fill(null)
+    .map((_, index) => (
+      <div
+        key={index}
+        className="p-4 bg-white rounded-2xl shadow-md flex flex-col gap-3"
+      >
+        <Skeleton height={20} width={150} borderRadius={8} />
+        <Skeleton height={14} count={2} borderRadius={8} />
+        <Skeleton height={30} width={100} borderRadius={8} />
+      </div>
+    ));
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="flex flex-col min-h-screen bg-white">
       <Navbar />
-      
-      <div className="flex-1 px-4 py-6 max-w-7xl mx-auto w-full">
-        {/* Modern Centered Search Bar */}
-        <div className="flex flex-col items-center mb-8">
-          <div className="relative w-full max-w-xl">
-            <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-              <FiSearch className="text-gray-400 text-lg" />
-            </div>
-            <input
-              type="text"
-              placeholder="Search by title or content..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-12 pr-10 py-3 w-full border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent shadow-sm transition-all duration-200"
-            />
-            {searchTerm && (
-              <button
-                onClick={() => setSearchTerm("")}
-                className="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-400 hover:text-gray-600 transition-colors"
-              >
-                <FiX className="text-lg" />
-              </button>
-            )}
-          </div>
-        </div>
-
-        <AddNote refreshOnSuccess={fetchUserFiles} />
-        <div className="divider my-6"></div>
-
-        {blankEnable ? (
-          <div className="text-center py-12">
-            <p className="text-gray-500 text-lg">No revision material found</p>
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {loading ? (
-              skeletonCards
-            ) : displayedFiles.length > 0 ? (
-              displayedFiles.map((i) => (
-                <Card
-                  key={i.id}
-                  journal={i}
-                  refreshOnSuccess={fetchUserFiles}
-                />
-              ))
-            ) : (
-              <div className="col-span-full text-center py-12">
-                <p className="text-gray-500 text-lg">
-                  {searchTerm ? "No matching revision material found" : "No revision material available"}
-                </p>
+      <div className="flex-grow">
+        <div className="flex-1 px-4 py-6 max-w-7xl mx-auto w-full ">
+          {/* Modern Centered Search Bar */}
+          <div className="flex flex-col items-center mb-8">
+            <div className="relative w-full max-w-xl">
+              <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                <FiSearch className="text-black text-lg" />
               </div>
-            )}
+              <input
+                type="text"
+                placeholder="Search by title or content..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="text-black pl-12 pr-10 py-3 w-full border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent shadow-sm transition-all duration-200"
+              />
+              {searchTerm && (
+                <button
+                  onClick={() => setSearchTerm("")}
+                  className="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-400 hover:text-gray-600 transition-colors"
+                >
+                  <FiX className="text-lg text-black" />
+                </button>
+              )}
+            </div>
           </div>
-        )}
-      </div>
 
+          <AddNote refreshOnSuccess={fetchUserFiles} />
+          <div className="divider my-6"></div>
+
+          {blankEnable ? (
+            <div className="text-center py-12">
+              <p className="text-gray-500 text-lg">
+                No revision material found
+              </p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {loading ? (
+                skeletonCards
+              ) : displayedFiles.length > 0 ? (
+                displayedFiles.map((i) => (
+                  <Card
+                    key={i.id}
+                    journal={i}
+                    sender={user}
+                    refreshOnSuccess={fetchUserFiles}
+                  />
+                ))
+              ) : (
+                <div className="col-span-full text-center py-12">
+                  <p className="text-gray-500 text-lg">
+                    {searchTerm
+                      ? "No matching revision material found"
+                      : "No revision material available"}
+                  </p>
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+      </div>
       <Footer />
     </div>
   );

@@ -48,7 +48,7 @@ const Register = () => {
       navigate('/login');
     } catch (err) {
       console.error("Registration error:", err);
-      setError(err.response?.data?.message || "Registration failed. Please try again.");
+      setError(err.response?.data?.message || "Registration failed. Please try again!! hint: Username already exists");
     } finally {
       setIsLoading(false);
     }
@@ -148,7 +148,7 @@ const Register = () => {
             />
           </div>
 
-          <div>
+          {/* <div>
             <span className="block text-gray-700 font-medium mb-2">Sentiment Analysis</span>
             <div className="flex gap-6">
               <label className="flex items-center space-x-2 text-gray-600">
@@ -176,7 +176,7 @@ const Register = () => {
                 <span>Enabled</span>
               </label>
             </div>
-          </div>
+          </div> */}
 
           <button
             type="submit"
