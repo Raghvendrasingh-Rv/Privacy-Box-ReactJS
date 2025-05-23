@@ -8,7 +8,7 @@ function AddNote({ refreshOnSuccess }) {
   const [description, setDescription] = useState("");
   const [fileType, setFileType] = useState("");
   const [fileUrl, setFileUrl] = useState("");
-  const sentiments = "ANGRY";
+  const sentiments="ANGRY";
   const [uploadNoteFile, setUploadNoteFile] = useState(null);
   const [isUploading, setIsUploading] = useState(false);
   const [isAddingEntry, setIsAddingEntry] = useState(false);

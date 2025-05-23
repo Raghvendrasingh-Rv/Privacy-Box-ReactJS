@@ -134,7 +134,6 @@ const Card = ({ journal, sender, refreshOnSuccess }) => {
       journal: journal,
       sender: sender,
       receiver: selectedUser,
-      seen: false,
     };
     try {
       await axios.post(`${BASE_URL}/shared/createSharedEntry`, body, {
