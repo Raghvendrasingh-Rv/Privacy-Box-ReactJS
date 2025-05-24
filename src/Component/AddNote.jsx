@@ -2,8 +2,6 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 const BASE_URL = import.meta.env.VITE_API_BASE_URL;
-import ReactQuill from "react-quill";
-import "react-quill/dist/quill.snow.css";
 
 function AddNote({ refreshOnSuccess }) {
   const [title, setTitle] = useState("");
