@@ -78,8 +78,7 @@ function Dashboard() {
       // When searching, filter files
       const filtered = allFiles.filter(
         (file) =>
-          file.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          file.content.toLowerCase().includes(searchTerm.toLowerCase())
+          file.title.toLowerCase().includes(searchTerm.toLowerCase())
       );
       setDisplayedFiles(filtered);
     }
@@ -105,7 +104,7 @@ function Dashboard() {
     ));
 
   return (
-    <div className="flex flex-col min-h-screen bg-white">
+    <div className="flex flex-col min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
       <Navbar />
       <div className="flex-grow">
         <div className="flex-1 px-4 py-6 max-w-7xl mx-auto w-full ">

@@ -177,23 +177,7 @@ const SharedEntry = () => {
                           <div className="flex justify-between items-center mt-3">
                             <p className="text-xs text-gray-400">
                               Received at:-
-                              {new Date(entry.sentTime).toLocaleString(
-                                "en-US",
-                                {
-                                  year: "numeric",
-                                  month: "long",
-                                  day: "numeric",
-                                  timeZone: "UTC", // Add this line
-                                }
-                              )}{" "}
-                              {new Date(entry.sentTime).toLocaleString(
-                                "en-US",
-                                {
-                                  hour: "2-digit",
-                                  minute: "2-digit",
-                                  timeZone: "UTC", // Add this line
-                                }
-                              )}
+                              {new Date(entry.sentTime).toLocaleString()}
                             </p>
                             {/* <div className="flex gap-2">
                           <button className="text-xs bg-indigo-600 text-white px-3 py-1 rounded hover:bg-indigo-700 transition">
@@ -265,23 +249,7 @@ const SharedEntry = () => {
                           <div className="flex justify-between items-center mt-3">
                             <p className="text-xs text-gray-400">
                               Sent at:-
-                              {new Date(entry.sentTime).toLocaleString(
-                                "en-US",
-                                {
-                                  year: "numeric",
-                                  month: "long",
-                                  day: "numeric",
-                                  timeZone: "UTC", // Add this line
-                                }
-                              )}{" "}
-                              {new Date(entry.sentTime).toLocaleString(
-                                "en-US",
-                                {
-                                  hour: "2-digit",
-                                  minute: "2-digit",
-                                  timeZone: "UTC", // Add this line
-                                }
-                              )}
+                              {new Date(entry.sentTime).toLocaleString()}
                             </p>
                             {/* <button className="text-xs text-indigo-600 hover:text-indigo-800" onClick={()=>navigate('/showEntry', { state: { entry: entry } })}>
                           View Details

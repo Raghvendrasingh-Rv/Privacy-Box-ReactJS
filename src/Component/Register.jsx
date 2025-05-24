@@ -112,7 +112,7 @@ const Register = () => {
           <div>
             <label className="block text-gray-700 font-medium mb-1">Email</label>
             <input
-              type="text"
+              type="email"
               name="email"
               required
               value={formData.email}

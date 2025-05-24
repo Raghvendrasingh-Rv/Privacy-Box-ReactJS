@@ -14,7 +14,7 @@ const sentimentColors = {
 const Card = ({ journal, sender, refreshOnSuccess }) => {
   const id = journal.id;
   const title = journal.title;
-  const description = journal.content;
+  const content = journal.content;
   const scheduledTime = journal.scheduledTime;
   const sentiment = journal.sentiment;
   const date = journal.date;
@@ -25,7 +25,7 @@ const Card = ({ journal, sender, refreshOnSuccess }) => {
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
   const [editData, setEditData] = useState({
     title,
-    description,
+    content,
     sentiment,
     scheduledTime,
     reminderStatus,
@@ -219,7 +219,7 @@ const Card = ({ journal, sender, refreshOnSuccess }) => {
                 className="w-full h-48 object-cover rounded-lg border border-gray-300"
                 loading="lazy"
               />
-            ) : fileUrl.match(/\.(txt|md|json)$/i) ? (
+            ) : fileUrl.match(/\.(txt|md|json|pdf|html)$/i) ? (
               <div className="w-full h-48 flex items-center justify-center bg-yellow-50 rounded-lg border border-yellow-300 text-yellow-700">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -235,7 +235,7 @@ const Card = ({ journal, sender, refreshOnSuccess }) => {
                     d="M9 12h6m-6 4h6m2 4H7a2 2 0 01-2-2V6a2 2 0 012-2h5l5 5v11a2 2 0 01-2 2z"
                   />
                 </svg>
-                <p className="ml-2 text-sm font-medium">Text file uploaded</p>
+                <p className="ml-2 text-sm font-medium">File uploaded</p>
               </div>
             ) : (
               <div className="w-full h-48 flex items-center justify-center bg-gray-100 rounded-lg border border-dashed border-gray-300 text-gray-400">
@@ -287,7 +287,7 @@ const Card = ({ journal, sender, refreshOnSuccess }) => {
         </div>
 
         <p className="text-gray-700 text-sm leading-relaxed mb-4 line-clamp-4">
-          {description}
+          {content}
         </p>
 
         <div className="flex flex-wrap items-center justify-between gap-2">
@@ -309,7 +309,7 @@ const Card = ({ journal, sender, refreshOnSuccess }) => {
       {/* Edit Modal */}
       {isModalOpen && (
         <div className="fixed inset-0 z-50 bg-opacity-30 backdrop-blur-2xl flex items-center justify-center p-4">
-          <div className="bg-white rounded-xl shadow-2xl w-full max-w-md border border-gray-200 animate-fade-in">
+          <div className="bg-white rounded-xl shadow-2xl w-200 border border-gray-200 animate-fade-in">
             <div className="p-6">
               <h3 className="text-2xl font-semibold text-gray-800 mb-4">
                 Edit Journal Entry
@@ -325,8 +325,8 @@ const Card = ({ journal, sender, refreshOnSuccess }) => {
                 />
 
                 <textarea
-                  name="description"
-                  value={editData.description}
+                  name="content"
+                  value={editData.content}
                   onChange={handleChange}
                   className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-400 text-black"
                   placeholder="Description"
@@ -401,7 +401,7 @@ const Card = ({ journal, sender, refreshOnSuccess }) => {
       {/* Share Modal */}
       {isShareModalOpen && (
         <div className="fixed inset-0 z-50 bg-opacity-30 backdrop-blur-2xl flex items-center justify-center p-4">
-          <div className="bg-white rounded-xl shadow-2xl w-full max-w-md border border-gray-200 animate-fade-in">
+          <div className="bg-white rounded-xl shadow-2xl w-200 min-w-md border border-gray-200 animate-fade-in">
             <div className="p-6">
               <h3 className="text-2xl font-semibold text-gray-800 mb-4">
                 Share Journal Entry

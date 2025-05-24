@@ -2,13 +2,15 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 const BASE_URL = import.meta.env.VITE_API_BASE_URL;
+import ReactQuill from "react-quill";
+import "react-quill/dist/quill.snow.css";
 
 function AddNote({ refreshOnSuccess }) {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [fileType, setFileType] = useState("");
   const [fileUrl, setFileUrl] = useState("");
-  const sentiments="ANGRY";
+  const sentiments = "ANGRY";
   const [uploadNoteFile, setUploadNoteFile] = useState(null);
   const [isUploading, setIsUploading] = useState(false);
   const [isAddingEntry, setIsAddingEntry] = useState(false);
@@ -48,13 +50,9 @@ function AddNote({ refreshOnSuccess }) {
     };
 
     try {
-      const res = await axios.post(
-        `${BASE_URL}/journal/createEntry`,
-        body,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
+      const res = await axios.post(`${BASE_URL}/journal/createEntry`, body, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
       console.log("Success:", res.data);
       refreshOnSuccess();
       setTitle("");
@@ -79,7 +77,7 @@ function AddNote({ refreshOnSuccess }) {
 
   const uploadFile = async () => {
     if (!uploadNoteFile) return;
-    
+
     setIsUploading(true);
     const formData = new FormData();
     formData.append("file", uploadNoteFile);
@@ -113,9 +111,9 @@ function AddNote({ refreshOnSuccess }) {
         <div className="flex flex-col md:flex-row md:space-x-6">
           {/* Left column */}
           <div className="md:w-1/2 space-y-4">
-          <label className="block text-gray-900 text-sm font-medium mb-1">
-                Title
-              </label>
+            <label className="block text-gray-900 text-sm font-medium mb-1">
+              Title
+            </label>
             {/* Title */}
             <input
               type="text"
@@ -158,9 +156,9 @@ function AddNote({ refreshOnSuccess }) {
 
           {/* Right column */}
           <div className="md:w-1/2 space-y-4 mt-6 md:mt-0">
-          <label className="block text-gray-900 text-sm font-medium mb-1">
-                Description
-              </label>
+            <label className="block text-gray-900 text-sm font-medium mb-1">
+              Description
+            </label>
             {/* Description */}
             <textarea
               placeholder="Write your thoughts here..."
@@ -168,6 +166,12 @@ function AddNote({ refreshOnSuccess }) {
               onChange={(e) => setDescription(e.target.value)}
               className="w-full px-5 py-3 text-base border border-gray-300 rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 min-h-[140px] text-black"
             ></textarea>
+
+            {/* <ReactQuill
+              theme="snow"
+              value={description}
+              onChange={setDescription}
+            /> */}
 
             {/* File Upload */}
             <div>
@@ -194,10 +198,29 @@ function AddNote({ refreshOnSuccess }) {
                 </label>
 
                 {isUploading ? (
-                  <button className="px-4 py-2 bg-blue-400 text-white rounded-lg shadow-md flex items-center" disabled>
-                    <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  <button
+                    className="px-4 py-2 bg-blue-400 text-white rounded-lg shadow-md flex items-center"
+                    disabled
+                  >
+                    <svg
+                      className="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                    >
+                      <circle
+                        className="opacity-25"
+                        cx="12"
+                        cy="12"
+                        r="10"
+                        stroke="currentColor"
+                        strokeWidth="4"
+                      ></circle>
+                      <path
+                        className="opacity-75"
+                        fill="currentColor"
+                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                      ></path>
                     </svg>
                     Uploading...
                   </button>
@@ -215,7 +238,7 @@ function AddNote({ refreshOnSuccess }) {
                     onClick={uploadFile}
                     disabled={!uploadNoteFile}
                     className={`px-4 py-2 rounded-lg shadow-md transition duration-300 ${
-                      uploadNoteFile 
+                      uploadNoteFile
                         ? "bg-blue-600 text-white hover:bg-blue-700"
                         : "bg-gray-300 text-gray-500 cursor-not-allowed"
                     }`}
@@ -234,14 +257,32 @@ function AddNote({ refreshOnSuccess }) {
             onClick={handleAddCard}
             disabled={isAddingEntry}
             className={`w-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-medium py-3 rounded-xl transition duration-300 flex items-center justify-center ${
-              isAddingEntry ? "opacity-75 cursor-not-allowed" : "hover:from-blue-700 hover:to-indigo-700"
+              isAddingEntry
+                ? "opacity-75 cursor-not-allowed"
+                : "hover:from-blue-700 hover:to-indigo-700"
             }`}
           >
             {isAddingEntry ? (
               <>
-                <svg className="animate-spin -ml-1 mr-2 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                <svg
+                  className="animate-spin -ml-1 mr-2 h-5 w-5 text-white"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <circle
+                    className="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    strokeWidth="4"
+                  ></circle>
+                  <path
+                    className="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                  ></path>
                 </svg>
                 Adding Entry...
               </>
