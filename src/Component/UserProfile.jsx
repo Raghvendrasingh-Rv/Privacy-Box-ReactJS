@@ -4,13 +4,14 @@ import { useNavigate } from "react-router-dom";
 import Navbar from "./Navbar";
 import Footer from "./Footer";
 const BASE_URL = import.meta.env.VITE_API_BASE_URL;
+import profilePicture from "../assets/profile.svg"
 
 const UserProfile = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [user, setUser] = useState({
-    name: "Alex Johnson",
-    email: "alex.johnson@example.com",
-    avatar: "https://randomuser.me/api/portraits/men/32.jpg",
+    name: "",
+    email: "",
+    avatar: profilePicture,
     bio: "Digital designer and frontend developer. Creating beautiful interfaces that people love to use.",
     location: "San Francisco, CA",
     joined: "Joined September 2022",

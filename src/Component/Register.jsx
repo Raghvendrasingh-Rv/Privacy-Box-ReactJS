@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState , useEffect} from 'react';
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 const BASE_URL = import.meta.env.VITE_API_BASE_URL;
@@ -14,6 +14,10 @@ const Register = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
+
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [matchedPassword, setMatchedPassword] = useState(true);
 
   const handleChange = (e) => {
     setFormData({ 
@@ -53,6 +57,16 @@ const Register = () => {
       setIsLoading(false);
     }
   };
+
+  useEffect(()=>{
+
+    if(formData.password==formData.confirmPassword){
+      setMatchedPassword(true);
+    }else{
+      setMatchedPassword(false);
+    }
+
+  },[formData.confirmPassword])
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-pink-100 via-blue-100 to-indigo-100 px-4">
@@ -122,31 +136,47 @@ const Register = () => {
             />
           </div>
 
-          <div>
-            <label className="block text-gray-700 font-medium mb-1">Password</label>
-            <input
-              type="password"
-              name="password"
-              required
-              value={formData.password}
-              onChange={handleChange}
-              disabled={isLoading}
-              className="w-full px-5 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-700 bg-white disabled:bg-gray-100"
-            />
-          </div>
+          {/* Password Field */}
+      <div className="mb-4 relative">
+        <label className="block text-gray-700 font-medium mb-1">Password</label>
+        <input
+          type={showPassword ? 'text' : 'password'}
+          name="password"
+          required
+          value={formData.password}
+          onChange={handleChange}
+          disabled={isLoading}
+          className={`w-full px-5 py-3 pr-12 border ${matchedPassword?"border-gray-300":"border-red-600"} rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-700 bg-white disabled:bg-gray-100`}
+        />
+        <button
+          type="button"
+          onClick={() => setShowPassword(!showPassword)}
+          className="absolute right-4 top-[65%] transform -translate-y-1/2 text-gray-600 text-xl"
+        >
+          {showPassword ? '🙈' : '👀'}
+        </button>
+      </div>
 
-          <div>
-            <label className="block text-gray-700 font-medium mb-1">Confirm Password</label>
-            <input
-              type="password"
-              name="confirmPassword"
-              required
-              value={formData.confirmPassword}
-              onChange={handleChange}
-              disabled={isLoading}
-              className="w-full px-5 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-700 bg-white disabled:bg-gray-100"
-            />
-          </div>
+      {/* Confirm Password Field */}
+      <div className="mb-4 relative">
+        <label className="block text-gray-700 font-medium mb-1">Confirm Password</label>
+        <input
+          type={showConfirmPassword ? 'text' : 'password'}
+          name="confirmPassword"
+          required
+          value={formData.confirmPassword}
+          onChange={handleChange}
+          disabled={isLoading||formData.password==''}
+          className="w-full px-5 py-3 pr-12 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-700 bg-white disabled:bg-gray-100"
+        />
+        <button
+          type="button"
+          onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+          className="absolute right-4 top-[65%] transform -translate-y-1/2 text-gray-600 text-xl"
+        >
+          {showConfirmPassword ? '🙈' : '👀'}
+        </button>
+      </div>
 
           {/* <div>
             <span className="block text-gray-700 font-medium mb-2">Sentiment Analysis</span>

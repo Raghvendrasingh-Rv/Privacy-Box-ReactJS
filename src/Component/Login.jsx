@@ -9,6 +9,8 @@ const Login = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
+  const [showPassword, setShowPassword] = useState(false);
+
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -71,19 +73,26 @@ const Login = () => {
             />
           </div>
 
-          <div>
+          <div className="mb-4 relative">
             <label htmlFor="password" className="block text-gray-700 font-medium mb-1">
               Password
             </label>
             <input
               id="password"
-              type="password"
+              type={showPassword?'text':'password'}
               required
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               disabled={isLoading}
               className="w-full px-5 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-700 bg-white disabled:bg-gray-100"
             />
+            <button
+          type="button"
+          onClick={() => setShowPassword(!showPassword)}
+          className="absolute right-4 top-[65%] transform -translate-y-1/2 text-gray-600 text-xl"
+        >
+          {showPassword ? '🙈' : '👀'}
+        </button>
           </div>
 
           <button

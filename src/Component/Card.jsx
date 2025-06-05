@@ -87,10 +87,52 @@ const Card = ({ journal, sender, refreshOnSuccess }) => {
     }));
   };
 
-  const getAllUser = async () => {
+
+  // const getAllUser = async () => {
+  //   try {
+  //     const response = await axios.get(`${BASE_URL}/user/getAllUser`, {
+  //       headers: { Authorization: `Bearer ${token}` },
+  //     });
+  //     console.log("Success:", response);
+  //   } catch (err) {
+  //     if (err.response?.data) {
+  //       console.log("Data (from error response):", err.response.data);
+  //       setUsers(err.response.data);
+  //     } else {
+  //       console.error("Real error:", err);
+  //     }
+  //   }
+  // };
+
+  // useEffect(() => {
+  //   if (isShareModalOpen) {
+  //     getAllUser();
+  //   }
+  // }, [isShareModalOpen]);
+
+  // useEffect(() => {
+  //   if (searchQuery.trim() === "") {
+  //     // When search is empty, show empty
+  //     setDisplayedFiles([]);
+  //   } else {
+  //     // When searching, filter files
+  //     const filtered = users.filter((user) =>
+  //       user.username.includes(searchQuery)
+  //     );
+  //     setDisplayedFiles(filtered);
+  //   }
+  // }, [searchQuery]);
+
+  //--------------------------------------------------------------------------------------
+
+    const getAllUser = async () => {
+      const params = {
+        username: searchQuery
+      }
     try {
-      const response = await axios.get(`${BASE_URL}/user/getAllUser`, {
+      const response = await axios.get(`http://localhost:8080/search/users`, {
         headers: { Authorization: `Bearer ${token}` },
+        params: params,
       });
       console.log("Success:", response);
     } catch (err) {
@@ -104,23 +146,27 @@ const Card = ({ journal, sender, refreshOnSuccess }) => {
   };
 
   useEffect(() => {
-    if (isShareModalOpen) {
-      getAllUser();
-    }
-  }, [isShareModalOpen]);
-
-  useEffect(() => {
     if (searchQuery.trim() === "") {
       // When search is empty, show empty
       setDisplayedFiles([]);
     } else {
       // When searching, filter files
-      const filtered = users.filter((user) =>
-        user.username.includes(searchQuery)
-      );
-      setDisplayedFiles(filtered);
+      const delayDebounceFn = setTimeout(() => {
+    if (searchQuery){
+      getAllUser();
+    }
+  }, 5000);
+
+  return () => clearTimeout(delayDebounceFn);
     }
   }, [searchQuery]);
+
+
+  useEffect(()=>{
+    setDisplayedFiles(users);
+  },[users])
+
+  //------------------------------------------------------------------------
 
   const onShare = async () => {
     if (!selectedUser) return;
