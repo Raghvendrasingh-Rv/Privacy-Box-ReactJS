@@ -60,7 +60,7 @@ const Login = () => {
         <form onSubmit={handleLogin} className="space-y-5">
           <div>
             <label htmlFor="username" className="block text-gray-700 font-medium mb-1">
-              Username
+              Username / Email
             </label>
             <input
               id="username"
@@ -91,7 +91,7 @@ const Login = () => {
           onClick={() => setShowPassword(!showPassword)}
           className="absolute right-4 top-[65%] transform -translate-y-1/2 text-gray-600 text-xl"
         >
-          {showPassword ? '🙈' : '👀'}
+          {!showPassword ? '🙈' : '👀'}
         </button>
           </div>
 

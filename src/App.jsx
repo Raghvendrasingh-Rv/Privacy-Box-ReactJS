@@ -9,6 +9,7 @@ import SharedEntry from './Component/SharedEntry';
 import ShowEntry from './Component/ShowEntry';
 import OpenEntry from './Component/OpenEntry';
 import ContactPage from './Component/ContactPage';
+import GoogleLoginSuccessPage from './Component/GoogleLoginSuccessPage';
 
 function App() {
 
@@ -24,6 +25,7 @@ function App() {
         <Route path="/showEntry" element={<ShowEntry/>} />
         <Route path="/openEntry" element={<OpenEntry/>} />
         <Route path="/contactPage" element={<ContactPage/>} />
+        <Route path="/googleLoginSuccessPage" element={<GoogleLoginSuccessPage/>} />
       </Routes>
     </Router>
   )

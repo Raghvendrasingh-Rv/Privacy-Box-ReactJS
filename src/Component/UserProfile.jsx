@@ -262,7 +262,7 @@ const UserProfile = () => {
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
                   <div className="bg-gray-50 p-4 rounded-lg">
                     <p className="text-2xl font-bold text-blue-600">
-                      {data.journalEntries.length}
+                      {data.journalEntries?.length}
                     </p>
                     <p className="text-gray-500">Posts</p>
                   </div>

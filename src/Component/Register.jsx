@@ -1,15 +1,16 @@
-import React, { useState , useEffect} from 'react';
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 const BASE_URL = import.meta.env.VITE_API_BASE_URL;
+const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
 
 const Register = () => {
   const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    password: '',
-    confirmPassword: '',
-    sentimentAnalysis: false
+    name: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+    sentimentAnalysis: false,
   });
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -20,15 +21,15 @@ const Register = () => {
   const [matchedPassword, setMatchedPassword] = useState(true);
 
   const handleChange = (e) => {
-    setFormData({ 
-      ...formData, 
-      [e.target.name]: e.target.value 
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
     });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     if (formData.password !== formData.confirmPassword) {
       setError("Passwords do not match!");
       return;
@@ -41,7 +42,7 @@ const Register = () => {
       username: formData.name,
       password: formData.password,
       email: formData.email,
-      sentimentAnalysis: formData.sentimentAnalysis
+      sentimentAnalysis: formData.sentimentAnalysis,
     };
 
     try {
@@ -49,24 +50,37 @@ const Register = () => {
         withCredentials: true,
       });
       console.log("Registration successful:", response.data);
-      navigate('/login');
+      navigate("/login");
     } catch (err) {
       console.error("Registration error:", err);
-      setError(err.response?.data?.message || "Registration failed. Please try again!! hint: Username already exists");
+      setError(
+        err.response?.data?.message ||
+          "Registration failed. Please try again!! hint: Username already exists"
+      );
     } finally {
       setIsLoading(false);
     }
   };
 
-  useEffect(()=>{
-
-    if(formData.password==formData.confirmPassword){
+  useEffect(() => {
+    if (formData.password == formData.confirmPassword) {
       setMatchedPassword(true);
-    }else{
+    } else {
       setMatchedPassword(false);
     }
+  }, [formData.confirmPassword]);
 
-  },[formData.confirmPassword])
+  const redirectUri = `${BASE_URL}/auth/google/callback`; // backend endpoint that handles the code
+
+  const handleLogin = () => {
+    const baseUrl = "https://accounts.google.com/o/oauth2/v2/auth";
+    const scope = encodeURIComponent("openid profile email");
+    const responseType = "code";
+
+    const authUrl = `${baseUrl}?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=${responseType}&scope=${scope}&access_type=offline&prompt=consent`;
+
+    window.location.href = authUrl; // redirect to Google for login
+  };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-pink-100 via-blue-100 to-indigo-100 px-4">
@@ -93,7 +107,7 @@ const Register = () => {
 
         <button
           className="w-full flex items-center justify-center gap-3 py-3 border border-gray-300 rounded-xl text-gray-700 bg-white hover:bg-gray-100 transition mb-6 disabled:opacity-50"
-          disabled={isLoading}
+          onClick={handleLogin}
         >
           <img
             src="https://www.svgrepo.com/show/475656/google-color.svg"
@@ -111,7 +125,9 @@ const Register = () => {
 
         <form onSubmit={handleSubmit} className="space-y-5">
           <div>
-            <label className="block text-gray-700 font-medium mb-1">Full Name</label>
+            <label className="block text-gray-700 font-medium mb-1">
+              Username
+            </label>
             <input
               type="text"
               name="name"
@@ -124,7 +140,9 @@ const Register = () => {
           </div>
 
           <div>
-            <label className="block text-gray-700 font-medium mb-1">Email</label>
+            <label className="block text-gray-700 font-medium mb-1">
+              Email
+            </label>
             <input
               type="email"
               name="email"
@@ -137,46 +155,52 @@ const Register = () => {
           </div>
 
           {/* Password Field */}
-      <div className="mb-4 relative">
-        <label className="block text-gray-700 font-medium mb-1">Password</label>
-        <input
-          type={showPassword ? 'text' : 'password'}
-          name="password"
-          required
-          value={formData.password}
-          onChange={handleChange}
-          disabled={isLoading}
-          className={`w-full px-5 py-3 pr-12 border ${matchedPassword?"border-gray-300":"border-red-600"} rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-700 bg-white disabled:bg-gray-100`}
-        />
-        <button
-          type="button"
-          onClick={() => setShowPassword(!showPassword)}
-          className="absolute right-4 top-[65%] transform -translate-y-1/2 text-gray-600 text-xl"
-        >
-          {showPassword ? '🙈' : '👀'}
-        </button>
-      </div>
+          <div className="mb-4 relative">
+            <label className="block text-gray-700 font-medium mb-1">
+              Password
+            </label>
+            <input
+              type={showPassword ? "text" : "password"}
+              name="password"
+              required
+              value={formData.password}
+              onChange={handleChange}
+              disabled={isLoading}
+              className={`w-full px-5 py-3 pr-12 border ${
+                matchedPassword ? "border-gray-300" : "border-red-600"
+              } rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-700 bg-white disabled:bg-gray-100`}
+            />
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="absolute right-4 top-[65%] transform -translate-y-1/2 text-gray-600 text-xl"
+            >
+              {!showPassword ? "🙈" : "👀"}
+            </button>
+          </div>
 
-      {/* Confirm Password Field */}
-      <div className="mb-4 relative">
-        <label className="block text-gray-700 font-medium mb-1">Confirm Password</label>
-        <input
-          type={showConfirmPassword ? 'text' : 'password'}
-          name="confirmPassword"
-          required
-          value={formData.confirmPassword}
-          onChange={handleChange}
-          disabled={isLoading||formData.password==''}
-          className="w-full px-5 py-3 pr-12 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-700 bg-white disabled:bg-gray-100"
-        />
-        <button
-          type="button"
-          onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-          className="absolute right-4 top-[65%] transform -translate-y-1/2 text-gray-600 text-xl"
-        >
-          {showConfirmPassword ? '🙈' : '👀'}
-        </button>
-      </div>
+          {/* Confirm Password Field */}
+          <div className="mb-4 relative">
+            <label className="block text-gray-700 font-medium mb-1">
+              Confirm Password
+            </label>
+            <input
+              type={showConfirmPassword ? "text" : "password"}
+              name="confirmPassword"
+              required
+              value={formData.confirmPassword}
+              onChange={handleChange}
+              disabled={isLoading || formData.password == ""}
+              className="w-full px-5 py-3 pr-12 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-700 bg-white disabled:bg-gray-100"
+            />
+            <button
+              type="button"
+              onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+              className="absolute right-4 top-[65%] transform -translate-y-1/2 text-gray-600 text-xl"
+            >
+              {!showConfirmPassword ? "🙈" : "👀"}
+            </button>
+          </div>
 
           {/* <div>
             <span className="block text-gray-700 font-medium mb-2">Sentiment Analysis</span>
@@ -212,14 +236,32 @@ const Register = () => {
             type="submit"
             disabled={isLoading}
             className={`w-full py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white text-lg rounded-xl font-semibold transition duration-300 flex items-center justify-center ${
-              isLoading ? "opacity-75 cursor-not-allowed" : "hover:from-blue-700 hover:to-indigo-700"
+              isLoading
+                ? "opacity-75 cursor-not-allowed"
+                : "hover:from-blue-700 hover:to-indigo-700"
             }`}
           >
             {isLoading ? (
               <>
-                <svg className="animate-spin -ml-1 mr-2 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                <svg
+                  className="animate-spin -ml-1 mr-2 h-5 w-5 text-white"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <circle
+                    className="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    strokeWidth="4"
+                  ></circle>
+                  <path
+                    className="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                  ></path>
                 </svg>
                 Creating account...
               </>
