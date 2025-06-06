@@ -6,28 +6,20 @@ const GoogleLoginSuccessPage = () => {
   const hasRun = useRef(false); 
 
   useEffect(() => {
-    // Parse token from cookie
     if (hasRun.current) return;
     hasRun.current = true;
 
-    const token = document.cookie
-      .split("; ")
-      .find((row) => row.startsWith("token="))
-      ?.split("=")[1];
+  const params = new URLSearchParams(window.location.search);
+  const token = params.get("token");
 
     if (token) {
       localStorage.setItem("token", token);
       console.log("Token saved from cookie to localStorage");
-      // Optional: clear the cookie after saving
-      document.cookie = "token=; Max-Age=0; path=/";
-
       setTimeout(() => {
         navigate("/dashboard");
       }, 1000);
     } else {
       console.warn("Token not found in cookie.");
-
-      // Only run this if token is truly missing
       setTimeout(() => {
         window.alert("Unable to login, retry...");
         navigate("/register");
