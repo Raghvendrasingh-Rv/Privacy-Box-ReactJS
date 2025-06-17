@@ -35,24 +35,6 @@ function Dashboard() {
       return;
     }
 
-    try {
-      const res = await axios.get(`${BASE_URL}/journal/getAll`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      updateFiles(res.data);
-      setDisplayedFiles(res.data); // Initially show all files
-    } catch (err) {
-      if (err.response?.status === 404) {
-        setBlankEnable(true);
-      } else if (err.response?.status === 401) {
-        localStorage.removeItem("token");
-        navigate("/login");
-      }
-      console.error("Error fetching files:", err);
-    } finally {
-      setLoading(false);
-    }
-
     //user info
     try {
       const res = await axios.get(`${BASE_URL}/user/userInfo`, {
@@ -67,6 +49,27 @@ function Dashboard() {
         console.error("Real error:", err);
       }
     }
+
+    console.log("Fetching files...");
+    try {
+      const res = await axios.get(`${BASE_URL}/journal/getAll`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      updateFiles(res.data);
+      setDisplayedFiles(res.data); // Initially show all files
+      setBlankEnable(res.data.length === 0);
+    } catch (err) {
+      if (err.response?.status === 404) {
+        setBlankEnable(true);
+      } else if (err.response?.status === 401) {
+        localStorage.removeItem("token");
+        navigate("/login");
+      }
+      console.error("Error fetching files:", err);
+    } finally {
+      setLoading(false);
+    }
+
   };
 
   // Filter files based on search term
@@ -143,7 +146,7 @@ function Dashboard() {
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {loading ? (
+              {loading || !user ? (
                 skeletonCards
               ) : displayedFiles.length > 0 ? (
                 displayedFiles.map((i) => (
