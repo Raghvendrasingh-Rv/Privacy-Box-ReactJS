@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import Navbar from "./Navbar";
 import Footer from "./Footer";
 const BASE_URL = import.meta.env.VITE_API_BASE_URL;
-import profilePicture from "../assets/profile.svg"
+import profilePicture from "../assets/profile.svg";
 
 const UserProfile = () => {
   const [isEditing, setIsEditing] = useState(false);
@@ -102,7 +102,7 @@ const UserProfile = () => {
               {/* Profile Header */}
               <div className="px-8 py-6 border-b border-gray-200">
                 <div className="flex flex-col sm:flex-row items-start sm:items-center">
-                  <div className="relative -mt-20 mb-4 sm:mb-0 sm:mr-6">
+                  <div className="relative mb-4 sm:mb-0 sm:mr-6">
                     <img
                       src={user.avatar}
                       alt="Profile"
@@ -124,7 +124,7 @@ const UserProfile = () => {
 
                   <div className="flex-1">
                     <div className="flex items-center justify-between">
-                      <h1 className="text-2xl font-bold text-gray-900">
+                      <h1 className="text-2xl font-bold text-gray-900 ">
                         {isEditing ? (
                           <input
                             type="text"
@@ -137,43 +137,6 @@ const UserProfile = () => {
                           user.name
                         )}
                       </h1>
-                      <div className="flex space-x-3">
-                        {isEditing ? (
-                          <>
-                            <button
-                              onClick={handleSave}
-                              className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md transition shadow-sm"
-                            >
-                              Save
-                            </button>
-                            <button
-                              onClick={() => setIsEditing(false)}
-                              className="bg-gray-200 hover:bg-gray-300 text-gray-800 px-4 py-2 rounded-md transition"
-                            >
-                              Cancel
-                            </button>
-                          </>
-                        ) : (
-                          <>
-                            <button
-                              onClick={() => setIsEditing(true)}
-                              className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md transition shadow-sm"
-                            >
-                              Edit Profile
-                            </button>
-                            <button className="bg-gray-200 hover:bg-gray-300 text-gray-800 px-4 py-2 rounded-md transition">
-                              <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                className="h-5 w-5"
-                                viewBox="0 0 20 20"
-                                fill="currentColor"
-                              >
-                                <path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z" />
-                              </svg>
-                            </button>
-                          </>
-                        )}
-                      </div>
                     </div>
 
                     <p className="text-gray-600 mt-1">
@@ -192,11 +155,50 @@ const UserProfile = () => {
                     <p className="text-gray-400 text-sm mt-1">{user.joined}</p>
                   </div>
                 </div>
+                <div className="flex-2">
+                  <div className="flex">
+                    {isEditing ? (
+                      <div className="ml-auto">
+                        <button
+                          onClick={handleSave}
+                          className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md transition shadow-sm mx-5"
+                        >
+                          Save
+                        </button>
+                        <button
+                          onClick={() => setIsEditing(false)}
+                          className="bg-gray-200 hover:bg-gray-300 text-gray-800 px-4 py-2 rounded-md transition"
+                        >
+                          Cancel
+                        </button>
+                      </div>
+                    ) : (
+                      <>
+                        <button
+                          onClick={() => setIsEditing(true)}
+                          className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md transition shadow-sm ml-auto w-30"
+                        >
+                          Edit Profile
+                        </button>
+                        {/* <button className="bg-gray-200 hover:bg-gray-300 text-gray-800 px-4 py-2 rounded-md transition">
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                className="h-5 w-5"
+                                viewBox="0 0 20 20"
+                                fill="currentColor"
+                              >
+                                <path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z" />
+                              </svg>
+                            </button> */}
+                      </>
+                    )}
+                  </div>
+                </div>
               </div>
 
               {/* Profile Details */}
               <div className="px-8 py-6 grid grid-cols-1 md:grid-cols-2 gap-8">
-                <div>
+                {/* <div>
                   <h2 className="text-lg font-semibold text-gray-900 mb-4">
                     About
                   </h2>
@@ -211,7 +213,7 @@ const UserProfile = () => {
                   ) : (
                     <p className="text-gray-700">{user.bio}</p>
                   )}
-                </div>
+                </div> */}
 
                 <div>
                   <h2 className="text-lg font-semibold text-gray-900 mb-4">
@@ -284,7 +286,7 @@ const UserProfile = () => {
           </div>
         )}
       </div>
-      <Footer/>
+      <Footer />
     </div>
   );
 };
