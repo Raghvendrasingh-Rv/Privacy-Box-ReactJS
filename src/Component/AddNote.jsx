@@ -103,7 +103,7 @@ function AddNote({ refreshOnSuccess }) {
     <div className="max-w-4xl mx-auto mt-12 p-6">
       <div className="bg-white/60 backdrop-blur-md border border-gray-200 shadow-xl p-8 rounded-2xl mb-6 transition hover:shadow-2xl">
         <h2 className="text-2xl font-bold text-gray-900 mb-6 tracking-tight">
-          📝 Add a New Journal Entry
+          📝 Add a New Reminder Entry
         </h2>
 
         <div className="flex flex-col md:flex-row md:space-x-6">

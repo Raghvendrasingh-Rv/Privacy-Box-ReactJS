@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import Navbar from "./Navbar";
 const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 const Login = () => {
@@ -36,7 +37,8 @@ const Login = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-tr from-indigo-100 via-sky-100 to-pink-100 px-4">
-      <div className="w-full max-w-md bg-white/70 backdrop-blur-lg border border-gray-200 shadow-xl rounded-2xl p-8 transition-all duration-300 relative">
+      <Navbar />
+      <div className="pt-15 w-full max-w-md bg-white/70 backdrop-blur-lg border border-gray-200 shadow-xl rounded-2xl p-8 transition-all duration-300 relative">
         {/* Loading overlay */}
         {isLoading && (
           <div className="absolute inset-0 bg-white/70 backdrop-blur-sm rounded-2xl flex items-center justify-center z-10">

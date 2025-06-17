@@ -104,10 +104,10 @@ function Dashboard() {
     ));
 
   return (
-    <div className="flex flex-col min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+    <div className="flex flex-col min-h-screen bg-gradient-to-br from-indigo-100 via-blue-100 to-white">
       <Navbar />
-      <div className="flex-grow">
-        <div className="flex-1 px-4 py-6 max-w-7xl mx-auto w-full ">
+      <div className="pt-15 flex-grow">
+        <div className="flex-1 px-4 py-6 max-w-7xl mx-auto w-full">
           {/* Modern Centered Search Bar */}
           <div className="flex flex-col items-center mb-8">
             <div className="relative w-full max-w-xl">
@@ -138,7 +138,7 @@ function Dashboard() {
           {blankEnable ? (
             <div className="text-center py-12">
               <p className="text-gray-500 text-lg">
-                No revision material found
+                No revision notes found
               </p>
             </div>
           ) : (

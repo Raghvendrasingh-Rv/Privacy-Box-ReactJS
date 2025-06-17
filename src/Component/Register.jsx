@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import Navbar from "./Navbar";
 const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
 
@@ -84,7 +85,8 @@ const Register = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-pink-100 via-blue-100 to-indigo-100 px-4">
-      <div className="w-full max-w-md bg-white/70 backdrop-blur-lg border border-gray-200 shadow-2xl rounded-2xl p-8 transition-all duration-300 relative">
+      <Navbar/>
+      <div className="pt-25 w-full max-w-md bg-white/70 backdrop-blur-lg border border-gray-200 shadow-2xl rounded-2xl p-8 transition-all duration-300 relative">
         {/* Loading overlay */}
         {isLoading && (
           <div className="absolute inset-0 bg-white/70 backdrop-blur-sm rounded-2xl flex items-center justify-center z-10">

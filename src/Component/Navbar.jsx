@@ -26,8 +26,17 @@ function Navbar() {
     
   }
 
+  const handleClick = ()=>{
+      const token = localStorage.getItem("token");
+      if(!token){
+        navigate("/");
+      }else{
+        navigate("/dashboard");
+      }
+  }
+
   return (
-    <Disclosure as="nav" className="bg-gray-800">
+    <Disclosure as="nav" className="bg-gray-800 fixed top-0 w-full z-50 shadow-md">
       <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
         <div className="relative flex h-16 items-center justify-between">
           <div className="absolute inset-y-0 left-0 flex items-center sm:hidden">
@@ -53,7 +62,7 @@ function Navbar() {
   <rect x="2" y="6" width="16" height="12" rx="2" fill="url(#smallGradient)"/>
   
 
-  <text x="22" y="18" fontFamily="'Segoe UI', Arial, sans-serif" fontSize="14" fontWeight="600" fill="url(#smallGradient)">
+  <text x="22" y="18" fontFamily="'Segoe UI', Arial, sans-serif" fontSize="14" fontWeight="600" fill="url(#smallGradient)" onClick={handleClick}>
     Revisorr
   </text>
   

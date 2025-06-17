@@ -89,7 +89,7 @@ END:VCARD`;
   return (
     <div className="flex flex-col min-h-screen">
       <Navbar />
-      <div className="flex-grow">
+      <div className="pt-15 flex-grow">
         <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 py-12 px-4 sm:px-6 lg:px-8">
           <div className="max-w-6xl mx-auto">
             {/* Header */}

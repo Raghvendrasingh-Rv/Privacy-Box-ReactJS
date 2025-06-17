@@ -69,6 +69,7 @@ const SharedEntry = () => {
 
   useEffect(() => {
     if (!token) {
+      navigate("/login");
       return;
     } else {
       getEntries();
@@ -92,7 +93,7 @@ const SharedEntry = () => {
   return (
     <div className="flex flex-col min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
       <Navbar />
-      <div className="flex-grow">
+      <div className="pt-15 flex-grow">
         <div className="max-w-4xl mx-auto p-6 flex-grow">
           <div className="bg-white rounded-xl shadow-md overflow-hidden">
             {/* Header with Tabs */}
