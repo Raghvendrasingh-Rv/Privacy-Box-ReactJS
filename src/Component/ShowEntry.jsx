@@ -88,7 +88,7 @@ const ShowEntry = () => {
   return (
     <div className="flex flex-col min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
       <Navbar />
-      <div className="flex-grow">
+      <div className=" pt-15 flex-grow">
         <div className="max-w-4xl mx-auto p-6">
           <div className="bg-white rounded-xl shadow-md overflow-hidden border border-gray-200">
             {/* Header with back button */}
@@ -97,7 +97,7 @@ const ShowEntry = () => {
                 onClick={() => navigate(-1)}
                 className="text-indigo-600 hover:text-indigo-800 font-medium"
               >
-                ← Back to entry
+                ← Back to main
               </button>
               <div className="flex items-center space-x-2 text-sm text-gray-500">
                 <p>Created at:</p>
@@ -116,19 +116,34 @@ const ShowEntry = () => {
               </h1>
 
               {/* Sentiment Badge */}
-              {entry.journal.sentiment && (
+              {entry.journal.category ? (
                 <span
                   className={`inline-block px-3 py-1 rounded-full text-sm font-medium mb-6 ${
-                    entry.journal.sentiment === "HAPPY"
+                    entry.journal.category === "PERSONAL"
                       ? "bg-green-100 text-green-800"
-                      : entry.journal.sentiment === "SAD"
+                      : entry.journal.category === "WORK"
                       ? "bg-blue-100 text-blue-800"
-                      : entry.journal.sentiment === "ANGRY"
+                      : entry.journal.category === "ETERTAINMENT"
                       ? "bg-red-100 text-red-800"
-                      : "bg-gray-100 text-gray-800"
+                      : entry.journal.category === "STUDY"
+                      ? "bg-yellow-100 text-yellow-800"
+                      : entry.journal.category === "HEALTH"
+                      ? "bg-orange-100 text-orange-800"
+                      : entry.journal.category === "SOCIAL"
+                      ? "bg-pink-100 text-pink-800"
+                      : entry.journal.category === "GOALS"
+                      ? "text-purple-600 bg-purple-100"
+                      : "bg-blue-100 text-black"
                   }`}
                 >
-                  {entry.journal.sentiment}
+                  {entry.journal.category}
+                </span>
+              ) : (
+                <span
+                  className={`inline-block px-3 py-1 rounded-full text-sm font-medium mb-6 bg-green-100 text-green-800
+                  }`}
+                >
+                  {"PERSONAL"}
                 </span>
               )}
 
@@ -202,7 +217,7 @@ const ShowEntry = () => {
                 ) : (
                   <div className="text-center py-8 bg-gray-50 rounded-lg border border-dashed border-gray-300 text-gray-500">
                     <FiFile className="mx-auto h-12 w-12" />
-                    <p className="mt-2">No file attached to this entry</p>
+                    <p className="mt-2">No file attached to this reminder</p>
                   </div>
                 )}
               </div>
@@ -218,13 +233,21 @@ const ShowEntry = () => {
                   </p>
                   <p
                     className={`text-sm mt-1 ${
-                      new Date(entry.journal.scheduledTime) > new Date()
+                      new Date(entry.journal.scheduledTime) > new Date() &&
+                      entry.journal.reminderStatus
                         ? "text-green-600"
+                        : new Date(entry.journal.scheduledTime) > new Date() &&
+                          !entry.journal.reminderStatus
+                        ? "text-red-500"
                         : "text-gray-500"
                     }`}
                   >
-                    {new Date(entry.journal.scheduledTime) > new Date()
+                    {new Date(entry.journal.scheduledTime) > new Date() &&
+                    entry.journal.reminderStatus
                       ? "Upcoming"
+                      : new Date(entry.journal.scheduledTime) > new Date() &&
+                        !entry.journal.reminderStatus
+                      ? "Off"
                       : "Completed"}
                   </p>
                 </div>

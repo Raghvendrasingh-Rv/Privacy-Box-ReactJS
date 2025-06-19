@@ -2,27 +2,28 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 const BASE_URL = import.meta.env.VITE_API_BASE_URL;
+const LOCAL_BACKEND_BASE_URL = import.meta.env.VITE_LOCAL_BACKEND_ENV;
 
 function AddNote({ refreshOnSuccess }) {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [fileType, setFileType] = useState("");
   const [fileUrl, setFileUrl] = useState("");
-  const sentiments = "ANGRY";
+  const [category, setCategory] = useState("PERSONAL");
   const [uploadNoteFile, setUploadNoteFile] = useState(null);
   const [isUploading, setIsUploading] = useState(false);
   const [isAddingEntry, setIsAddingEntry] = useState(false);
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
 
-  const oneWeekLaterISO = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
+  const oneWeekLaterISO = new Date(Date.now() + 3 * 24 * 60 * 60 * 1000)
     .toISOString()
     .slice(0, 16);
 
   const [scheduledTime, setScheduledTime] = useState(oneWeekLaterISO);
 
   const handleAddCard = async (e) => {
-    if (title !== "" && description !== "" && sentiments !== "") {
+    if (title !== "" && description !== "" && category !== "") {
       e.preventDefault();
       await addEntry();
     } else {
@@ -44,7 +45,7 @@ function AddNote({ refreshOnSuccess }) {
       fileUrl: fileUrl,
       scheduledTime: scheduledTime,
       reminderStatus: true,
-      sentiments: sentiments,
+      category: category,
     };
 
     try {
@@ -103,7 +104,7 @@ function AddNote({ refreshOnSuccess }) {
     <div className="max-w-4xl mx-auto mt-12 p-6">
       <div className="bg-white/60 backdrop-blur-md border border-gray-200 shadow-xl p-8 rounded-2xl mb-6 transition hover:shadow-2xl">
         <h2 className="text-2xl font-bold text-gray-900 mb-6 tracking-tight">
-          📝 Add a New Reminder Entry
+          📝 Add a New Reminder
         </h2>
 
         <div className="flex flex-col md:flex-row md:space-x-6">
@@ -121,22 +122,25 @@ function AddNote({ refreshOnSuccess }) {
               className="w-full px-5 py-3 text-base border border-gray-300 rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 text-black"
             />
 
-            {/* Sentiment */}
-            {/* <div>
+            {/* Category */}
+            <div>
               <label className="block text-gray-900 text-sm font-medium mb-1">
-                Sentiment
+                Category
               </label>
               <select
-                value={sentiments}
-                onChange={(e) => setSentiments(e.target.value)}
+                value={category}
+                onChange={(e) => setCategory(e.target.value)}
                 className="w-full px-5 py-3 text-base border border-gray-300 rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 text-black"
               >
-                <option value="HAPPY">😊 Happy</option>
-                <option value="SAD">😔 Sad</option>
-                <option value="ANGRY">😡 Angry</option>
-                <option value="ANXIOUS">😟 Anxious</option>
+                <option value="PERSONAL">😊 PERSONAL</option>
+                <option value="WORK">🏢 WORK</option>
+                <option value="STUDY">📖 STUDY</option>
+                <option value="HEALTH">🏃‍♂️ HEALTH</option>
+                <option value="eTERTAINMENT">🧑‍🎤 ENTERTAINMENT</option>
+                <option value="SOCIAL">🧑‍💻 SOCIAL</option>
+                <option value="GOALS">🕛 GOALS</option>
               </select>
-            </div> */}
+            </div>
 
             {/* Schedule Time */}
             <div>
@@ -282,10 +286,10 @@ function AddNote({ refreshOnSuccess }) {
                     d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
                   ></path>
                 </svg>
-                Adding Entry...
+                Adding Reminder...
               </>
             ) : (
-              "➕ Add Entry"
+              "➕ Add Reminder"
             )}
           </button>
         </div>

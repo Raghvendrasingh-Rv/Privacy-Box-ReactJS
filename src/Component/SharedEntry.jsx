@@ -108,7 +108,7 @@ const SharedEntry = () => {
               >
                 <div className="flex items-center justify-center gap-2">
                   <FiInbox className="text-lg" />
-                  <span>RECEIVED ENTRIES</span>
+                  <span>RECEIVED REMINDERS</span>
                 </div>
               </button>
               <button
@@ -121,7 +121,7 @@ const SharedEntry = () => {
               >
                 <div className="flex items-center justify-center gap-2">
                   <FiSend className="text-lg" />
-                  <span>SENT ENTRIES</span>
+                  <span>SENT REMINDERS</span>
                 </div>
               </button>
             </div>
@@ -136,7 +136,7 @@ const SharedEntry = () => {
                 >
                   <h2 className="text-xl font-semibold text-gray-800 flex items-center gap-2">
                     <FiInbox className="text-indigo-500" />
-                    RECEIVED ENTRIES
+                    RECEIVED REMINDERS
                   </h2>
                   {expandedReceived ? <FiChevronUp /> : <FiChevronDown />}
                 </div>
@@ -193,7 +193,7 @@ const SharedEntry = () => {
                       ))
                     ) : (
                       <div className="text-center py-8 text-gray-500">
-                        No received entries found
+                        No received reminders found!
                       </div>
                     )}
                   </div>
@@ -208,7 +208,7 @@ const SharedEntry = () => {
                 >
                   <h2 className="text-xl font-semibold text-gray-800 flex items-center gap-2">
                     <FiSend className="text-indigo-500" />
-                    SENT ENTRIES
+                    SENT REMINDERS
                   </h2>
                   {expandedSent ? <FiChevronUp /> : <FiChevronDown />}
                 </div>
@@ -260,7 +260,7 @@ const SharedEntry = () => {
                       ))
                     ) : (
                       <div className="text-center py-8 text-gray-500">
-                        No sent entries found
+                        No sent reminders found!
                       </div>
                     )}
                   </div>

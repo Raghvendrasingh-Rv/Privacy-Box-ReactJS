@@ -3,12 +3,16 @@ import { FaTrashAlt, FaEdit, FaShare } from "react-icons/fa";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 const BASE_URL = import.meta.env.VITE_API_BASE_URL;
+const LOCAL_BACKEND_BASE_URL = import.meta.env.VITE_LOCAL_BACKEND_ENV;
 
-const sentimentColors = {
-  HAPPY: "text-green-600 bg-green-100",
-  SAD: "text-blue-600 bg-blue-100",
-  ANGRY: "text-red-600 bg-red-100",
-  ANXIOUS: "text-yellow-600 bg-yellow-100",
+const categoryColors = {
+  PERSONAL: "text-green-600 bg-green-100",
+  WORK: "text-blue-600 bg-blue-100",
+  ENTERTAINMENT: "text-red-600 bg-red-100",
+  STUDY: "text-yellow-600 bg-yellow-100",
+  HEALTH: "text-orange-600 bg-orange-100",
+  SOCIAL: "text-pink-600 bg-pink-100",
+  GOALS: "text-purple-600 bg-purple-100",
 };
 
 const Card = ({ journal, sender, refreshOnSuccess }) => {
@@ -16,7 +20,7 @@ const Card = ({ journal, sender, refreshOnSuccess }) => {
   const title = journal.title;
   const content = journal.content;
   const scheduledTime = journal.scheduledTime;
-  const sentiment = journal.sentiment;
+  const category = journal.category ? journal.category : "PERSONAL";
   const date = journal.date;
   const fileUrl = journal.fileUrl;
   const reminderStatus = journal.reminderStatus;
@@ -26,7 +30,7 @@ const Card = ({ journal, sender, refreshOnSuccess }) => {
   const [editData, setEditData] = useState({
     title,
     content,
-    sentiment,
+    category,
     scheduledTime,
     reminderStatus,
   });
@@ -68,9 +72,13 @@ const Card = ({ journal, sender, refreshOnSuccess }) => {
   const handleUpdate = async () => {
     setIsUpdating(true);
     try {
-      await axios.put(`${BASE_URL}/journal/update/${id}`, editData, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      await axios.put(
+        `${BASE_URL}/journal/update/${id}`,
+        editData,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
       refreshOnSuccess();
       setIsModalOpen(false);
     } catch (err) {
@@ -87,50 +95,12 @@ const Card = ({ journal, sender, refreshOnSuccess }) => {
     }));
   };
 
-
-  // const getAllUser = async () => {
-  //   try {
-  //     const response = await axios.get(`${BASE_URL}/user/getAllUser`, {
-  //       headers: { Authorization: `Bearer ${token}` },
-  //     });
-  //     console.log("Success:", response);
-  //   } catch (err) {
-  //     if (err.response?.data) {
-  //       console.log("Data (from error response):", err.response.data);
-  //       setUsers(err.response.data);
-  //     } else {
-  //       console.error("Real error:", err);
-  //     }
-  //   }
-  // };
-
-  // useEffect(() => {
-  //   if (isShareModalOpen) {
-  //     getAllUser();
-  //   }
-  // }, [isShareModalOpen]);
-
-  // useEffect(() => {
-  //   if (searchQuery.trim() === "") {
-  //     // When search is empty, show empty
-  //     setDisplayedFiles([]);
-  //   } else {
-  //     // When searching, filter files
-  //     const filtered = users.filter((user) =>
-  //       user.username.includes(searchQuery)
-  //     );
-  //     setDisplayedFiles(filtered);
-  //   }
-  // }, [searchQuery]);
-
-  //--------------------------------------------------------------------------------------
-
-    const getAllUser = async () => {
-      const params = {
-        username: searchQuery
-      }
+  const getAllUser = async () => {
+    const params = {
+      username: searchQuery,
+    };
     try {
-      const response = await axios.get(`http://localhost:8080/search/users`, {
+      const response = await axios.get(`${BASE_URL}/search/users`, {
         headers: { Authorization: `Bearer ${token}` },
         params: params,
       });
@@ -152,28 +122,21 @@ const Card = ({ journal, sender, refreshOnSuccess }) => {
     } else {
       // When searching, filter files
       const delayDebounceFn = setTimeout(() => {
-    if (searchQuery){
-      getAllUser();
-    }
-  }, 5000);
+        if (searchQuery) {
+          getAllUser();
+        }
+      }, 3000);
 
-  return () => clearTimeout(delayDebounceFn);
+      return () => clearTimeout(delayDebounceFn);
     }
   }, [searchQuery]);
 
-
-  useEffect(()=>{
+  useEffect(() => {
     setDisplayedFiles(users);
-  },[users])
-
-  //------------------------------------------------------------------------
+  }, [users]);
 
   const onShare = async () => {
     if (!selectedUser) return;
-
-    console.log(journal);
-    console.log(selectedUser);
-    console.log(sender);
 
     setIsSharing(true);
     const body = {
@@ -198,59 +161,59 @@ const Card = ({ journal, sender, refreshOnSuccess }) => {
   };
 
   const formatDatetimeLocal = (datetimeStr) => {
-  if (!datetimeStr) return "";
-  const date = new Date(datetimeStr);
-  const offset = date.getTimezoneOffset();
-  const localDate = new Date(date.getTime() - offset * 60000); // adjust to local time
-  return localDate.toISOString().slice(0, 16);
-};
+    if (!datetimeStr) return "";
+    const date = new Date(datetimeStr);
+    const offset = date.getTimezoneOffset();
+    const localDate = new Date(date.getTime() - offset * 60000); // adjust to local time
+    return localDate.toISOString().slice(0, 16);
+  };
 
   return (
     <>
       <div
         onClick={() => navigate("/openEntry", { state: { journal: journal } })}
-        className="relative bg-white shadow-lg rounded-2xl p-6 w-full max-w-md mx-auto border border-gray-200 hover:border-indigo-400 transition-all duration-300 ease-in-out m-4"
+        className="relative bg-white shadow-lg rounded-2xl p-6 w-full max-w-md mx-auto border border-gray-200 hover:border-gray-300 transition hover:shadow-2xl duration-300 ease-in-out m-4"
       >
         {/* Action Buttons */}
-        <div className="absolute top-3 right-3 flex gap-2">
+        <div className="absolute top-3 right-3 flex gap-3">
           <button
             onClick={(e) => {
               e.stopPropagation();
               setIsShareModalOpen(true);
             }}
-            className="text-purple-600 hover:text-purple-800 p-2 rounded-full bg-purple-50 hover:bg-purple-100 transition-colors"
+            className="text-purple-600 hover:text-purple-800 p-2 rounded-full bg-purple-50 hover:bg-purple-100 transition-colors border-1"
             title="Share"
             aria-label="Share entry"
             disabled={isDeleting}
           >
-            <FaShare size={16} />
+            <FaShare size={24} />
           </button>
           <button
             onClick={(e) => {
               e.stopPropagation();
               onEdit();
             }}
-            className="text-blue-600 hover:text-blue-800 p-2 rounded-full bg-blue-50 hover:bg-blue-100 transition-colors"
+            className="text-blue-600 hover:text-blue-800 p-2 rounded-full bg-blue-50 hover:bg-blue-100 transition-colors border-1"
             title="Edit"
             aria-label="Edit entry"
             disabled={isDeleting}
           >
-            <FaEdit size={16} />
+            <FaEdit size={24} />
           </button>
           <button
             onClick={(e) => {
               e.stopPropagation();
               onDelete();
             }}
-            className="text-red-600 hover:text-red-800 p-2 rounded-full bg-red-50 hover:bg-red-100 transition-colors flex items-center justify-center min-w-[32px] min-h-[32px]"
+            className="text-red-600 hover:text-red-800 p-2 rounded-full bg-red-50 hover:bg-red-100 transition-colors flex items-center justify-center min-w-[32px] min-h-[32px] border-1"
             title="Delete"
             aria-label="Delete entry"
             disabled={isDeleting}
           >
             {isDeleting ? (
-              <div className="animate-spin h-4 w-4 border-2 border-red-600 border-t-transparent rounded-full"></div>
+              <div className="animate-spin h-6 w-6 border-2 border-red-600 border-t-transparent rounded-full"></div>
             ) : (
-              <FaTrashAlt size={16} />
+              <FaTrashAlt size={24} />
             )}
           </button>
         </div>
@@ -344,10 +307,10 @@ const Card = ({ journal, sender, refreshOnSuccess }) => {
           )}
           <span
             className={`inline-block px-3 py-1 text-xs rounded-full font-medium ${
-              sentimentColors[sentiment] || "bg-gray-100 text-gray-600"
+              categoryColors[category] || "bg-grey-100 text-gray-600"
             }`}
           >
-            {sentiment}
+            {category}
           </span>
         </div>
       </div>
@@ -358,7 +321,7 @@ const Card = ({ journal, sender, refreshOnSuccess }) => {
           <div className="bg-white rounded-xl shadow-2xl w-200 border border-gray-200 animate-fade-in">
             <div className="p-6">
               <h3 className="text-2xl font-semibold text-gray-800 mb-4">
-                Edit Journal Entry
+                Edit Reminder
               </h3>
 
               <div className="space-y-4">
@@ -387,33 +350,51 @@ const Card = ({ journal, sender, refreshOnSuccess }) => {
                   className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-400 text-black"
                 />
 
-                <div className="flex items-center">
-                  <input
-                    type="checkbox"
-                    id="reminderToggle"
-                    checked={editData.reminderStatus || false}
-                    onChange={handleReminderToggle}
-                    className="mr-2"
-                  />
-                  <label
-                    htmlFor="reminderToggle"
-                    className="text-sm text-gray-700"
-                  >
-                    Enable Reminder
-                  </label>
-                </div>
-
-                {/* <select
-                  name="sentiment"
-                  value={editData.sentiment}
+                <select
+                  name="category"
+                  value={editData.category}
                   onChange={handleChange}
                   className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-400 text-black"
                 >
-                  <option value="HAPPY">😊 Happy</option>
-                  <option value="SAD">😔 Sad</option>
-                  <option value="ANGRY">😡 Angry</option>
-                  <option value="ANXIOUS">😟 Anxious</option>
-                </select> */}
+                  <option value="PERSONAL">😊 PERSONAL</option>
+                  <option value="WORK">🏢 WORK</option>
+                  <option value="STUDY">📖 STUDY</option>
+                  <option value="HEALTH">🏃‍♂️ HEALTH</option>
+                  <option value="ETERTAINMENT">🧑‍🎤 ENTERTAINMENT</option>
+                  <option value="SOCIAL">🧑‍💻 SOCIAL</option>
+                  <option value="GOALS">🕛 GOALS</option>
+                </select>
+              </div>
+
+              <div className="flex items-center mt-3">
+                <label>Reminder Status:</label>
+                <input
+                  type="checkbox"
+                  id="reminderToggle"
+                  checked={editData.reminderStatus}
+                  onChange={handleReminderToggle}
+                  className=" bg-red-600 ml-5"
+                />
+                <label
+                  htmlFor="reminderToggle"
+                  className="text-base text-gray-700 ml-3 mr-7"
+                >
+                  ON
+                </label>
+
+                <input
+                  type="checkbox"
+                  id="reminderToggle"
+                  checked={!editData.reminderStatus}
+                  onChange={handleReminderToggle}
+                  className="bg-red-600 ml-5"
+                />
+                <label
+                  htmlFor="reminderToggle"
+                  className="text-sm text-gray-700 ml-3 mr-7"
+                >
+                  OFF
+                </label>
               </div>
 
               <div className="flex justify-end gap-3 mt-6">
@@ -450,7 +431,7 @@ const Card = ({ journal, sender, refreshOnSuccess }) => {
           <div className="bg-white rounded-xl shadow-2xl w-200 min-w-md border border-gray-200 animate-fade-in">
             <div className="p-6">
               <h3 className="text-2xl font-semibold text-gray-800 mb-4">
-                Share Journal Entry
+                Share Reminder
               </h3>
 
               <div className="relative mb-4">

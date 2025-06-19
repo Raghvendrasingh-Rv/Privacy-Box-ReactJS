@@ -6,6 +6,7 @@ import Navbar from "./Navbar";
 import AddNote from "./AddNote";
 import { useNavigate } from "react-router-dom";
 const BASE_URL = import.meta.env.VITE_API_BASE_URL;
+const LOCAL_BACKEND_BASE_URL = import.meta.env.VITE_LOCAL_BACKEND_ENV;
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import { FiSearch, FiX } from "react-icons/fi";
@@ -49,8 +50,6 @@ function Dashboard() {
         console.error("Real error:", err);
       }
     }
-
-    console.log("Fetching files...");
     try {
       const res = await axios.get(`${BASE_URL}/journal/getAll`, {
         headers: { Authorization: `Bearer ${token}` },
@@ -115,14 +114,14 @@ function Dashboard() {
           <div className="flex flex-col items-center mb-8">
             <div className="relative w-full max-w-xl">
               <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                <FiSearch className="text-black text-lg" />
+                <FiSearch className="text-black text-lg " />
               </div>
               <input
                 type="text"
-                placeholder="Search by title or content..."
+                placeholder="Search by title"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="text-black pl-12 pr-10 py-3 w-full border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent shadow-sm transition-all duration-200"
+                className="text-black pl-12 pr-10 py-3 w-full border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-300 focus:border-transparent shadow-sm transition-all duration-200 bg-white"
               />
               {searchTerm && (
                 <button
@@ -141,7 +140,7 @@ function Dashboard() {
           {blankEnable ? (
             <div className="text-center py-12">
               <p className="text-gray-500 text-lg">
-                No revision notes found
+                No revision found
               </p>
             </div>
           ) : (
@@ -161,8 +160,8 @@ function Dashboard() {
                 <div className="col-span-full text-center py-12">
                   <p className="text-gray-500 text-lg">
                     {searchTerm
-                      ? "No matching revision material found"
-                      : "No revision material available"}
+                      ? "No matching revision material found!"
+                      : "No revision available!"}
                   </p>
                 </div>
               )}
