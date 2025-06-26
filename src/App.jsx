@@ -10,6 +10,7 @@ import ShowEntry from './Component/ShowEntry';
 import OpenEntry from './Component/OpenEntry';
 import ContactPage from './Component/ContactPage';
 import GoogleLoginSuccessPage from './Component/GoogleLoginSuccessPage';
+import ChatbotPage from './Component/ChatbotPage';
 
 function App() {
 
@@ -26,6 +27,7 @@ function App() {
         <Route path="/openEntry" element={<OpenEntry/>} />
         <Route path="/contactPage" element={<ContactPage/>} />
         <Route path="/googleLoginSuccessPage" element={<GoogleLoginSuccessPage/>} />
+        <Route path="/chatbot" element={<ChatbotPage/>} />
       </Routes>
     </Router>
   )

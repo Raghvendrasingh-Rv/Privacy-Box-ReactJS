@@ -5,10 +5,9 @@ import profile from '../assets/profile.svg'
 
 const navigation = [
   { name: 'Dashboard', href: '/dashboard', current: true },
-  // { name: 'Search', href: '#', current: false },
   { name: 'Sent/Received', href: '/sharedEntry', current: false },
-  // { name: 'Discussion', href: '#', current: false },
   { name: 'About Us', href: '/contactPage', current: false },
+  { name: 'ChatBot', href: '/chatbot', current: false },
 ]
 
 function classNames(...classes) {
