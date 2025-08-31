@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import Navbar from "./Navbar";
 const BASE_URL = import.meta.env.VITE_API_BASE_URL;
+const LOCAL_BACKEND_BASE_URL = import.meta.env.VITE_LOCAL_BACKEND_ENV;
 
 const Login = () => {
   const [username, setUsername] = useState("");
